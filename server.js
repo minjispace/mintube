@@ -8,6 +8,9 @@ import morgan from 'morgan';
 //  middleware import
 import {notFoundMiddleware, errorHandlerMiddleware} from './middlewares/index.js';
 
+//  router import
+import authRouter from './routes/authRoute.js';
+
 // --------------------------------------
 //  env setup
 dotenv.config();
@@ -15,11 +18,10 @@ dotenv.config();
 // app setup
 const app = express();
 const port = process.env.PORT || 5000;
+const base_url = '/api/v1';
 
 // extra packages middleware setup
-if (process.env.NODE_ENV !== 'production') {
-  app.use(morgan('dev'));
-}
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors());
 
@@ -27,6 +29,7 @@ app.use(cors());
 app.get('/', (req, res) => {
   res.json({msg: 'welcome mintube server'});
 });
+app.use(`${base_url}/auth`, authRouter);
 
 // 🔥 error middleware 항상 마지막 미들웨어에 위치 🔥
 app.use(notFoundMiddleware);
@@ -34,7 +37,11 @@ app.use(errorHandlerMiddleware);
 
 // start server
 const startServer = () => {
-  app.listen(port, console.log(`server started on port ${port}`));
+  try {
+    app.listen(port, console.log(`✅✅✅ server started on port ${port}`));
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 startServer();
