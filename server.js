@@ -11,6 +11,9 @@ import {notFoundMiddleware, errorHandlerMiddleware} from './middlewares/index.js
 //  router import
 import authRouter from './routes/authRoute.js';
 
+// prisma import
+import {PrismaClient} from '@prisma/client';
+
 // --------------------------------------
 //  env setup
 dotenv.config();
@@ -19,6 +22,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 const base_url = '/api/v1';
+const prisma = new PrismaClient();
 
 // extra packages middleware setup
 app.use(morgan('dev'));
@@ -36,11 +40,13 @@ app.use(notFoundMiddleware);
 app.use(errorHandlerMiddleware);
 
 // start server
-const startServer = () => {
+const startServer = async () => {
   try {
     app.listen(port, console.log(`✅✅✅ server started on port ${port}`));
   } catch (error) {
     console.log(error);
+    await prisma.$disconnect();
+    process.exit(1);
   }
 };
 
