@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "migrate":"npx prisma migrate dev --name init",
+    "studio":"npx prisma studio"
   },
   "author": "",
   "license": "ISC",
