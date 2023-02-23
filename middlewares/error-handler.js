@@ -32,6 +32,7 @@ const errorHandlerMiddleware = (err, req, res, next) => {
   }
 
   // 이 모든 에러가 없을떄 res.json 요청
+  console.log(customError.msg, '@@@ error message');
   return res.status(customError.statusCode).json({msg: customError.msg});
 };
 

@@ -1,4 +1,5 @@
-import {hashToken} from './hashToken.js';
-import {generateAccessToken, generateRefreshToken, generateTokens} from './jwt.js';
+import {hashToken, createVerificationToken} from './hashToken.js';
+import {createJWT, isTokenValid, attachCookiesToResponse} from './jwt.js';
+import createTokenUser from './createTokenUser.js';
 
-export {hashToken, generateAccessToken, generateRefreshToken, generateTokens};
+export {hashToken, createVerificationToken, createJWT, isTokenValid, attachCookiesToResponse, createTokenUser};

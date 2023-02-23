@@ -4,6 +4,7 @@ import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import morgan from 'morgan';
+import c from 'cookie-parser';
 
 //  middleware import
 import {notFoundMiddleware, errorHandlerMiddleware} from './middlewares/index.js';
@@ -13,6 +14,7 @@ import authRouter from './routes/authRoute.js';
 
 // prisma import
 import {PrismaClient} from '@prisma/client';
+import cookieParser from 'cookie-parser';
 
 // --------------------------------------
 //  env setup
@@ -28,6 +30,7 @@ const prisma = new PrismaClient();
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser(process.env.JWT_SECRET));
 
 // routes setup
 app.get('/', (req, res) => {
@@ -41,13 +44,20 @@ app.use(errorHandlerMiddleware);
 
 // start server
 const startServer = async () => {
-  try {
-    app.listen(port, console.log(`✅✅✅ server started on port ${port}`));
-  } catch (error) {
-    console.log(error);
-    await prisma.$disconnect();
-    process.exit(1);
-  }
+  // Connect to PostgreSQL using Prisma
+  prisma
+    .$connect()
+    .then(() => {
+      console.log('✅ Connected to mysql database');
+
+      // Start the Express server once the database connection is established
+      app.listen(port, () => {
+        console.log(`✅ Express server listening on port : ${port}`);
+      });
+    })
+    .catch((err) => {
+      console.error('Error connecting to PostgreSQL database:', err);
+    });
 };
 
 startServer();

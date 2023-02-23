@@ -1,33 +1,40 @@
 import jwt from 'jsonwebtoken';
+// ----------------------------------------------
 
-function generateAccessToken(user) {
-  return jwt.sign({userId: user.id}, process.env.JWT_ACCESS_SECRET, {
-    expiresIn: '5m',
+//  1. create JWT
+const createJWT = ({payload}) => {
+  const token = jwt.sign(payload, process.env.JWT_SECRET);
+  return token;
+};
+
+//  2. is token valid check
+const isTokenValid = (token) => jwt.verify(token, process.env.JWT_SECRET);
+
+//  3. attach cookies to reaponse
+const attachCookiesToResponse = ({res, user, refreshToken}) => {
+  //  token 생성
+  const accessTokenJWT = createJWT({payload: {user}});
+  const refreshTokenJWT = createJWT({payload: {user, refreshToken}});
+
+  //  날짜 설정
+  const oneDay = 1000 * 60 * 60 * 24;
+  const longerExp = 1000 * 60 * 60 * 24 * 30;
+
+  //  access token cookie로 보내주기
+  res.cookie('accessToken', accessTokenJWT, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    signed: true,
+    expires: new Date(Date.now() + oneDay),
   });
-}
 
-function generateRefreshToken(user, jti) {
-  return jwt.sign(
-    {
-      userId: user.id,
-      jti,
-    },
-    process.env.JWT_REFRESH_SECRET,
-    {
-      expiresIn: '8h',
-    }
-  );
-}
+  //  refresh token cookie로 보내주기
+  res.cookie('refreshToken', refreshTokenJWT, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    signed: true,
+    expires: new Date(Date.now() + longerExp),
+  });
+};
 
-function generateTokens(user, jti) {
-  console.log({user, jti}, 'generate token');
-  const accessToken = generateAccessToken(user);
-  const refreshToken = generateRefreshToken(user, jti);
-
-  return {
-    accessToken,
-    refreshToken,
-  };
-}
-
-export {generateAccessToken, generateTokens, generateRefreshToken};
+export {createJWT, isTokenValid, attachCookiesToResponse};

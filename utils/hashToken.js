@@ -1,8 +1,13 @@
 import crypto from 'crypto';
 // ------------------------------------------------------
 
-function hashToken(token) {
+//  token hash 해주기
+const hashToken = (token) => {
   return crypto.createHash('sha512').update(token).digest('hex');
-}
+};
 
-export {hashToken};
+//  verification token 생성
+const createVerificationToken = () => crypto.randomBytes(40).toString('hex');
+
+//  export functions
+export {createVerificationToken, hashToken};
