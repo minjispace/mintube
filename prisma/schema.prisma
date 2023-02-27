@@ -26,9 +26,6 @@ model User {
 
   //  video
   video Video[]
-
-  //  comment
-  comment Comment[]
 }
 
 // model RefreshToken 
@@ -48,40 +45,19 @@ model Token {
 
 //  model Video
 model Video {
-  id          String   @default(uuid())
+  id          String   @unique @default(uuid())
   title       String   @db.VarChar(30)
   description String   @db.Text
-  viewCount   Int
+  viewCount   Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   //  video format
-  path     String @db.VarChar(255)
-  fileSize Int
-  duration Int
+  fileUrl String @db.VarChar(255)
 
   //  user
-  authorId String @unique
-  author   User   @relation(fields: [authorId], references: [id])
-
-  //  comment
-  comments Comment[]
-}
-
-// model Comment
-model Comment {
-  id        String   @default(uuid())
-  message   String   @db.Text
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  //  user
-  authorId String @unique
-  author   User   @relation(fields: [authorId], references: [id])
-
-  //  video
-  videoAuthorId String
-  video         Video  @relation(fields: [videoAuthorId], references: [authorId])
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
 }
 
 // enum Role
