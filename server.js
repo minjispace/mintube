@@ -4,17 +4,17 @@ import express from 'express';
 import 'express-async-errors';
 import cors from 'cors';
 import morgan from 'morgan';
-import c from 'cookie-parser';
+import cookieParser from 'cookie-parser';
 
 //  middleware import
 import {notFoundMiddleware, errorHandlerMiddleware} from './middlewares/index.js';
 
 //  router import
 import authRouter from './routes/authRoute.js';
+import videoRouter from './routes/videoRoute.js';
 
 // prisma import
 import {PrismaClient} from '@prisma/client';
-import cookieParser from 'cookie-parser';
 
 // --------------------------------------
 //  env setup
@@ -37,6 +37,7 @@ app.get('/', (req, res) => {
   res.json({msg: 'welcome mintube server'});
 });
 app.use(`${base_url}/auth`, authRouter);
+app.use(`${base_url}/video`, videoRouter);
 
 // 🔥 error middleware 항상 마지막 미들웨어에 위치 🔥
 app.use(notFoundMiddleware);

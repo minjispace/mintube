@@ -55,6 +55,11 @@ model Video {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  //  video format
+  path     String @db.VarChar(255)
+  fileSize Int
+  duration Int
+
   //  user
   authorId String @unique
   author   User   @relation(fields: [authorId], references: [id])

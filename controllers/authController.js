@@ -205,12 +205,6 @@ const updateUserPassword = async (req, res) => {
 };
 
 // ------------------------------------------------
-//  ✅ delete user  controller
-const deleteUser = async (req, res) => {
-  res.json('delte user');
-};
-
-// ------------------------------------------------
 // ✅  get user all videos
 const getUserVideos = async (req, res) => {
   res.json('get user all videosr');
@@ -223,4 +217,4 @@ const getUserComments = async (req, res) => {
 };
 
 // ------------------------------------------------
-export {registerUser, loginUser, updateUserName, readyUpdateUserPassword, deleteUser, logoutUser, getUserComments, getUserVideos, updateUserPassword};
+export {registerUser, loginUser, updateUserName, readyUpdateUserPassword, logoutUser, getUserComments, getUserVideos, updateUserPassword};
