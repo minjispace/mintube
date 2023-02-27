@@ -1,9 +1,8 @@
 import {StatusCodes} from 'http-status-codes';
 import {BadRequestError, UnauthorizedError} from '../errors/index.js';
-import {createUserByEmailAndPassword, findUserByEmail, updateUserToDatabase, comparePassword} from '../services/user.services.js';
+import {createUserByEmailAndPassword, findUserByEmail, updateUserToDatabase, comparePasswordWithBcrypt, hashBcryptPassword} from '../services/user.services.js';
 import {createVerificationToken, hashToken, createTokenUser, attachCookiesToResponse} from '../utils/index.js';
 import {addTokenToDatabase, findTokenByIdFromDatabase, deleteTokenFromDatabase} from '../services/token.services.js';
-import db from '../db/connect.js';
 // -----------------------------------------------
 
 //  ✅ create user controller
@@ -21,11 +20,11 @@ const registerUser = async (req, res) => {
     throw new BadRequestError('Email is already in use. please write another email.');
   }
 
-  //  create token
-  const verificationToken = hashToken(createVerificationToken());
+  //  bcrypt hash password 만들기
+  const hashedPassword = await hashBcryptPassword(password);
 
   //  email,password,name을 보내서 새로운 유저 등록
-  const user = await createUserByEmailAndPassword({email, password, name, verificationToken, passwordToken: ''});
+  const user = await createUserByEmailAndPassword({email, password: hashedPassword, name, passwordToken: ''});
 
   // res 요청
   return res.status(StatusCodes.CREATED).json({
@@ -51,9 +50,10 @@ const loginUser = async (req, res) => {
   }
 
   // 해당 password가 아닐 경우
-  const isMatch = comparePassword(password, existingUser.password);
+  // 비교해주고 이럴떄 꼭 모듈화해준 함수에도, 그 함수를 불러주는 아이에도 await으로 가져와주기
+  const isMatch = await comparePasswordWithBcrypt(password, existingUser.password);
 
-  //  비밀번호가 match하지 않을 때
+  //  비밀번호가 match 하지 않을 때
   if (!isMatch) {
     throw new BadRequestError('Invalid user password credentials');
   }
@@ -101,9 +101,7 @@ const loginUser = async (req, res) => {
 // ------------------------------------------------
 // ✅ logout user  controller
 const logoutUser = async (req, res) => {
-  const user = req.user;
-
-  await deleteTokenFromDatabase(user.id);
+  await deleteTokenFromDatabase(req.user.id);
 
   //  access token
   res.cookie('accessToken', 'logout', {
@@ -124,13 +122,13 @@ const logoutUser = async (req, res) => {
 const updateUserName = async (req, res) => {
   const {name} = req.body;
 
-  //  fields중에 하나라도 충족 되지 않았을때
+  //  fields중에 하나라도 충족 되지 않았을 때
   if (!name) {
     throw new BadRequestError('please provide new name');
   }
 
   //  update new name
-  const updatedUser = await updateUserToDatabase(req.user.email, name);
+  const updatedUser = await updateUserToDatabase(req.user.id, 'name', name);
 
   // create new tokenUser
   const tokenUser = createTokenUser(updatedUser);
@@ -148,7 +146,7 @@ const updateUserName = async (req, res) => {
 // ✅ ready for update user password controller
 const readyUpdateUserPassword = async (req, res) => {
   const {originalPassword} = req.body;
-  console.log(originalPassword, 'original password');
+
   //  fields에서 하나라도 충족되지 않았을 때
   if (!originalPassword) {
     throw new BadRequestError('please provide original your password');
@@ -158,28 +156,22 @@ const readyUpdateUserPassword = async (req, res) => {
   const currentUser = await findUserByEmail(req.user.email);
 
   //  원래 비밀번호와 oldPassword에 쓴 값이 맞는지 비교
-  const isPasswordCorrect = comparePassword(currentUser.password, originalPassword);
+  // 비교해주고 이럴떄 꼭 모듈화해준 함수에도, 그 함수를 불러주는 아이에도 await으로 가져와주기
+  const isMatch = await comparePasswordWithBcrypt(originalPassword, currentUser.password);
 
   //  원래 비밀번호와 일치하지 않을때
-  if (!isPasswordCorrect) {
+  if (!isMatch) {
     throw new UnauthorizedError('Not matched original password');
   }
 
-  //  password token 생성
+  //  password hash token 생성
   const passwordToken = hashToken(createVerificationToken());
 
   //  password token update
-  await db.user.update({
-    where: {
-      id: req.user.id,
-    },
-    data: {
-      passwordToken,
-    },
-  });
+  await updateUserToDatabase(req.user.id, 'passwordToken', passwordToken);
 
   //  res 요청
-  return res.status(StatusCodes.OK).json({msg: 'ready for reset paassword', passwordToken});
+  return res.status(StatusCodes.OK).json({msg: 'ready for reset password', passwordToken});
 };
 
 // ------------------------------------------------
@@ -202,18 +194,13 @@ const updateUserPassword = async (req, res) => {
   if (user.passwordToken !== passwordToken) {
     throw new BadRequestError('not matched your passwordToken.');
   }
+  //  bcrypt hash password
+  const hashedPassword = await hashBcryptPassword(newPassword);
 
   //  조건이 다 맞으니 update 시켜주기
-  await db.user.update({
-    where: {
-      id: user.id,
-    },
-    data: {
-      password: newPassword,
-      passwordToken: '',
-    },
-  });
+  await updateUserToDatabase(user.id, 'password', hashedPassword);
 
+  // res 요청
   res.status(StatusCodes.OK).json({msg: 'success reset password'});
 };
 

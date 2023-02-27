@@ -27,14 +27,10 @@ const findTokenByIdFromDatabase = (userId, refreshToken) => {
 };
 
 //  used to delete if the user is logged out
-const deleteTokenFromDatabase = (user, userId) => {
-  console.log({user, userId}, 'delete token');
+const deleteTokenFromDatabase = (userId) => {
   return db.token.delete({
     where: {userId},
   });
 };
 
-//  update user info
-const updateTokenFromDatabase = (userId) => {};
-
-export {addTokenToDatabase, findTokenByIdFromDatabase, deleteTokenFromDatabase, updateTokenFromDatabase};
+export {addTokenToDatabase, findTokenByIdFromDatabase, deleteTokenFromDatabase};
