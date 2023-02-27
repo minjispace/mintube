@@ -1,4 +1,4 @@
-import {BadRequestError, UnauthenticatedError} from '../errors/index.js';
+import {BadRequestError, UnauthenticatedError, UnauthorizedError} from '../errors/index.js';
 import {findTokenByIdFromDatabase} from '../services/token.services.js';
 import {attachCookiesToResponse, isTokenValid} from '../utils/index.js';
 
@@ -38,4 +38,15 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-export default authenticateUser;
+//  authorizePermissionsForOnlyAdmin
+const authorizePermissionsForOnlyAdmin = (role) => {
+  return (req, res, next) => {
+    //  만약 Role이 ADMIN계정이 아니라면 빠꾸
+    if (!role.match(req.user.role)) {
+      throw new UnauthorizedError('Unauthorized to access this user. please login admin user');
+    }
+    next();
+  };
+};
+
+export {authenticateUser, authorizePermissionsForOnlyAdmin};
