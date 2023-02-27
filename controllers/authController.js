@@ -1,13 +1,12 @@
 import {StatusCodes} from 'http-status-codes';
-import {BadRequestError} from '../errors/index.js';
-import {createUserByEmailAndPassword, findUserByEmail} from '../services/user.services.js';
+import {BadRequestError, UnauthorizedError} from '../errors/index.js';
+import {createUserByEmailAndPassword, findUserByEmail, updateUserToDatabase, comparePassword} from '../services/user.services.js';
 import {createVerificationToken, hashToken, createTokenUser, attachCookiesToResponse} from '../utils/index.js';
-import bcrypt from 'bcrypt';
-import {addTokenToDatabase, findTokenByIdFromDatabase} from '../services/token.services.js';
-
+import {addTokenToDatabase, findTokenByIdFromDatabase, deleteTokenFromDatabase} from '../services/token.services.js';
+import db from '../db/connect.js';
 // -----------------------------------------------
 
-//  1. create user controller
+//  ✅ create user controller
 const registerUser = async (req, res) => {
   const {email, name, password} = req.body;
 
@@ -26,15 +25,15 @@ const registerUser = async (req, res) => {
   const verificationToken = hashToken(createVerificationToken());
 
   //  email,password,name을 보내서 새로운 유저 등록
-  const user = await createUserByEmailAndPassword({email, password, name, verificationToken});
+  const user = await createUserByEmailAndPassword({email, password, name, verificationToken, passwordToken: ''});
 
   // res 요청
   return res.status(StatusCodes.CREATED).json({
     user,
   });
 };
-
-//  2.login user controller
+// ------------------------------------------------
+//  ✅ login user controller
 const loginUser = async (req, res) => {
   const {email, password} = req.body;
 
@@ -43,6 +42,7 @@ const loginUser = async (req, res) => {
     throw new BadRequestError('please provide all values');
   }
 
+  //  내 user database에서 존재하는 User 찾기
   const existingUser = await findUserByEmail(email);
 
   // 현존하는 이메일이 아닐 경우
@@ -51,8 +51,10 @@ const loginUser = async (req, res) => {
   }
 
   // 해당 password가 아닐 경우
-  const validPassword = await bcrypt.compare(password, existingUser.password);
-  if (!validPassword) {
+  const isMatch = comparePassword(password, existingUser.password);
+
+  //  비밀번호가 match하지 않을 때
+  if (!isMatch) {
     throw new BadRequestError('Invalid user password credentials');
   }
 
@@ -76,7 +78,7 @@ const loginUser = async (req, res) => {
     //isValid가 true긴 하지만 token이 존재하므로, 다시 우리의 cookie에 붙여주자
     refreshToken = existingToken.refreshToken;
     attachCookiesToResponse({res, user: tokenUser, refreshToken});
-    res.status(StatusCodes.OK).json({user: tokenUser, refreshToken});
+    res.status(StatusCodes.OK).json({user: tokenUser});
     return;
   }
 
@@ -93,38 +95,145 @@ const loginUser = async (req, res) => {
   attachCookiesToResponse({res, user: tokenUser, refreshToken});
 
   // res 요청
-  return res.status(StatusCodes.OK).json({user: tokenUser, refreshToken});
+  return res.status(StatusCodes.OK).json({user: tokenUser});
 };
 
-//  3. update user controller
-const updateUser = async (req, res) => {
-  res.json('update user');
+// ------------------------------------------------
+// ✅ logout user  controller
+const logoutUser = async (req, res) => {
+  const user = req.user;
+
+  await deleteTokenFromDatabase(user.id);
+
+  //  access token
+  res.cookie('accessToken', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  //  refresh  token
+  res.cookie('refreshToken', 'logout', {
+    httpOnly: true,
+    expires: new Date(Date.now()),
+  });
+
+  res.status(StatusCodes.OK).json({msg: 'user logged out!'});
 };
 
-//  4. delete user  controller
+//  ✅ update user name controller
+const updateUserName = async (req, res) => {
+  const {name} = req.body;
+
+  //  fields중에 하나라도 충족 되지 않았을때
+  if (!name) {
+    throw new BadRequestError('please provide new name');
+  }
+
+  //  update new name
+  const updatedUser = await updateUserToDatabase(req.user.email, name);
+
+  // create new tokenUser
+  const tokenUser = createTokenUser(updatedUser);
+
+  //  token database에서 나의 해당 user로 existingToken 찾기
+  const {refreshToken} = await findTokenByIdFromDatabase(updatedUser.id);
+
+  // attachCookiesToResponse
+  attachCookiesToResponse({res, user: tokenUser, refreshToken});
+
+  res.status(StatusCodes.OK).json({user: tokenUser});
+};
+
+// ------------------------------------------------
+// ✅ ready for update user password controller
+const readyUpdateUserPassword = async (req, res) => {
+  const {originalPassword} = req.body;
+  console.log(originalPassword, 'original password');
+  //  fields에서 하나라도 충족되지 않았을 때
+  if (!originalPassword) {
+    throw new BadRequestError('please provide original your password');
+  }
+
+  // database에서 나의 user찾기
+  const currentUser = await findUserByEmail(req.user.email);
+
+  //  원래 비밀번호와 oldPassword에 쓴 값이 맞는지 비교
+  const isPasswordCorrect = comparePassword(currentUser.password, originalPassword);
+
+  //  원래 비밀번호와 일치하지 않을때
+  if (!isPasswordCorrect) {
+    throw new UnauthorizedError('Not matched original password');
+  }
+
+  //  password token 생성
+  const passwordToken = hashToken(createVerificationToken());
+
+  //  password token update
+  await db.user.update({
+    where: {
+      id: req.user.id,
+    },
+    data: {
+      passwordToken,
+    },
+  });
+
+  //  res 요청
+  return res.status(StatusCodes.OK).json({msg: 'ready for reset paassword', passwordToken});
+};
+
+// ------------------------------------------------
+//  ✅ update user password
+const updateUserPassword = async (req, res) => {
+  const {passwordToken, newPassword, email} = req.body;
+
+  //  fields가 하나라도 충족되지 않을때
+  if (!passwordToken || !newPassword || !email) {
+    throw new BadRequestError('please provide all values');
+  }
+
+  //  해당 email이 나의 user database에 있는지 확인
+  const user = await findUserByEmail(email);
+  if (!user) {
+    throw new BadRequestError('not matched your email.');
+  }
+
+  //  passwordToken이 맞지 않을때
+  if (user.passwordToken !== passwordToken) {
+    throw new BadRequestError('not matched your passwordToken.');
+  }
+
+  //  조건이 다 맞으니 update 시켜주기
+  await db.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      password: newPassword,
+      passwordToken: '',
+    },
+  });
+
+  res.status(StatusCodes.OK).json({msg: 'success reset password'});
+};
+
+// ------------------------------------------------
+//  ✅ delete user  controller
 const deleteUser = async (req, res) => {
   res.json('delte user');
 };
 
-//  5. logout user  controller
-const logoutUser = async (req, res) => {
-  res.json('logout User ');
-};
-
-//  6.get user all videos
+// ------------------------------------------------
+// ✅  get user all videos
 const getUserVideos = async (req, res) => {
   res.json('get user all videosr');
 };
 
-// 7.get user all comments
+// ------------------------------------------------
+// ✅  get user all comments
 const getUserComments = async (req, res) => {
   res.json('get user all comments');
 };
 
-// 8. refresh token
-const refreshToken = async (req, res) => {
-  console.log(refreshToken, '@@refresh token');
-  res.json({msg: 'refresh token created'});
-};
-
-export {registerUser, loginUser, updateUser, deleteUser, logoutUser, getUserComments, getUserVideos, refreshToken};
+// ------------------------------------------------
+export {registerUser, loginUser, updateUserName, readyUpdateUserPassword, deleteUser, logoutUser, getUserComments, getUserVideos, updateUserPassword};

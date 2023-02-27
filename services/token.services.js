@@ -2,7 +2,7 @@ import db from '../db/connect.js';
 // ----------------------------------------------------
 
 // used when we create a refresh token.
-function addTokenToDatabase({refreshToken, ip, userAgent, userId}) {
+const addTokenToDatabase = ({refreshToken, ip, userAgent, userId}) => {
   return db.token.create({
     data: {
       refreshToken,
@@ -11,13 +11,30 @@ function addTokenToDatabase({refreshToken, ip, userAgent, userId}) {
       userId,
     },
   });
-}
+};
 
 // used to check if the token sent by the client is in the database.
-function findTokenByIdFromDatabase(userId) {
-  return db.token.findUniqueOrThrow({
+const findTokenByIdFromDatabase = (userId, refreshToken) => {
+  if (!refreshToken) {
+    return db.token.findUnique({
+      where: {userId},
+    });
+  }
+
+  return db.token.findFirst({
+    where: {userId, refreshToken},
+  });
+};
+
+//  used to delete if the user is logged out
+const deleteTokenFromDatabase = (user, userId) => {
+  console.log({user, userId}, 'delete token');
+  return db.token.delete({
     where: {userId},
   });
-}
+};
 
-export {addTokenToDatabase, findTokenByIdFromDatabase};
+//  update user info
+const updateTokenFromDatabase = (userId) => {};
+
+export {addTokenToDatabase, findTokenByIdFromDatabase, deleteTokenFromDatabase, updateTokenFromDatabase};

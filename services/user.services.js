@@ -27,12 +27,21 @@ async function createUserByEmailAndPassword(user) {
   });
 }
 
-function findUserById(id) {
-  return db.user.findUnique({
+// compare original password and written password
+const comparePassword = async (userPassword, writtenPassword) => {
+  return await bcrypt.compare(writtenPassword, userPassword);
+};
+
+//  update user to database
+const updateUserToDatabase = (email, content) => {
+  return db.user.update({
     where: {
-      id,
+      email,
+    },
+    data: {
+      name: content,
     },
   });
-}
+};
 
-export {getFirstUser, findUserByEmail, createUserByEmailAndPassword, findUserById};
+export {getFirstUser, findUserByEmail, createUserByEmailAndPassword, updateUserToDatabase, comparePassword};

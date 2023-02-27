@@ -9,5 +9,11 @@ const hashToken = (token) => {
 //  verification token 생성
 const createVerificationToken = () => crypto.randomBytes(40).toString('hex');
 
+//  bcrypt compare password
+const comparePassword = async (writtenPassword, realPassword) => {
+  const isMatch = await bcrypt.compare(writtenPassword, realPassword);
+  return isMatch;
+};
+
 //  export functions
-export {createVerificationToken, hashToken};
+export {createVerificationToken, hashToken, comparePassword};

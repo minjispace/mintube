@@ -20,12 +20,21 @@ model User {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   verificationToken String
+  passwordToken     String
 
-  token Token[]
+  //  token
+  token Token?
+
+  //  video
+  video Video[]
+
+  //  comment
+  comment Comment[]
 }
 
 // model RefreshToken 
 model Token {
+  id           String   @default(uuid())
   refreshToken String
   ip           String
   userAgent    String
@@ -33,10 +42,42 @@ model Token {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  userId String
+  // user
+  userId String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
-  @@unique([userId])
+//  model Video
+model Video {
+  id          String   @default(uuid())
+  title       String   @db.VarChar(30)
+  description String   @db.Text
+  viewCount   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  //  user
+  authorId String @unique
+  author   User   @relation(fields: [authorId], references: [id])
+
+  //  comment
+  comments Comment[]
+}
+
+// model Comment
+model Comment {
+  id        String   @default(uuid())
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //  user
+  authorId String @unique
+  author   User   @relation(fields: [authorId], references: [id])
+
+  //  video
+  videoAuthorId String
+  video         Video  @relation(fields: [videoAuthorId], references: [authorId])
 }
 
 // enum Role
