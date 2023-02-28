@@ -19,7 +19,6 @@ const findAllVideo = () => {
 };
 
 const findSingleVideoById = (id) => {
-  console.log(id, 'id');
   return db.video.findUnique({
     where: {
       id,
@@ -27,4 +26,21 @@ const findSingleVideoById = (id) => {
   });
 };
 
-export {createVideoToDatabase, findAllVideo, findSingleVideoById};
+const updateVideoById = (id, data) => {
+  const {title, description} = data;
+  return db.video.update({
+    where: {id},
+    data: {
+      title,
+      description,
+    },
+  });
+};
+
+const deleteVideoById = (id) => {
+  return db.video.delete({
+    where: {id},
+  });
+};
+
+export {createVideoToDatabase, findAllVideo, findSingleVideoById, updateVideoById, deleteVideoById};

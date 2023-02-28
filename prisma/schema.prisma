@@ -57,7 +57,7 @@ model Video {
 
   //  user
   userId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 // enum Role

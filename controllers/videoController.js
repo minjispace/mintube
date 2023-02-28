@@ -1,7 +1,7 @@
 import {StatusCodes} from 'http-status-codes';
-import {BadRequestError, UnauthenticatedError} from '../errors/index.js';
+import {BadRequestError, NotFoundError, UnauthenticatedError} from '../errors/index.js';
 import {findUserByEmail} from '../services/user.services.js';
-import {createVideoToDatabase, findAllVideo, findSingleVideoById} from '../services/video.services.js';
+import {createVideoToDatabase, deleteVideoById, findAllVideo, findSingleVideoById, updateVideoById} from '../services/video.services.js';
 
 //  ✅ create video
 const createVideo = async (req, res) => {
@@ -39,12 +39,37 @@ const createVideo = async (req, res) => {
 
 // ✅  update video
 const updateVideo = async (req, res) => {
-  res.json({msg: 'update video'});
+  const {id} = req.params;
+  const {title, description} = req.body;
+
+  //  fields중 하나라도 충족이 되지않을때
+  if (!title || !description) {
+    throw new BadRequestError('please provide all values');
+  }
+
+  //  해당 video가 없을때
+  const updatedVideo = await updateVideoById(id, {title, description});
+  if (!updatedVideo) {
+    throw new NotFoundError(`No video with id ${id}`);
+  }
+
+  // res 요청
+  res.status(StatusCodes.OK).json({video: updatedVideo});
 };
 
 //  ✅ delete video
 const deleteVideo = async (req, res) => {
-  res.json({msg: 'delete video'});
+  const {id} = req.params;
+
+  const video = await findSingleVideoById(id);
+  //  해당 id로 video를 찾을 수 없을때
+  if (!video) {
+    throw new NotFoundError(`No product with id ${id}`);
+  }
+
+  await deleteVideoById(id);
+  //  res 요청
+  res.status(StatusCodes.OK).json({msg: 'Success! Video removed'});
 };
 
 //  ✅ get all videos
@@ -54,7 +79,7 @@ const getAllVideos = async (req, res) => {
 
   //  video가 없을경우
   if (videoCount === 0) {
-    throw new BadRequestError('no videos');
+    throw new NotFoundError('no videos');
   }
   res.status(StatusCodes.OK).json({videos, count: videoCount});
 };
@@ -66,7 +91,7 @@ const getSingleVideo = async (req, res) => {
   //  해당 친 id로 우리의 video 정보가 존재하지않을때
   const singleVideo = await findSingleVideoById(id);
   if (!singleVideo) {
-    throw new BadRequestError(`No Video with id ${id}`);
+    throw new NotFoundError(`No Video with id ${id}`);
   }
 
   //  res 요청
