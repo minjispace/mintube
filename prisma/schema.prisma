@@ -25,8 +25,10 @@ model User {
   token Token?
 
   //  video
-  video   Video[]
-  Comment Comment[]
+  video Video[]
+
+  //  comments
+  comment Comment[]
 }
 
 // model RefreshToken 
@@ -65,7 +67,6 @@ model Video {
 //  model Comment
 model Comment {
   id        String   @unique @default(uuid())
-  author    String
   message   String   @db.VarChar(255)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

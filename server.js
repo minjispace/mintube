@@ -12,6 +12,7 @@ import {notFoundMiddleware, errorHandlerMiddleware} from './middlewares/index.js
 //  router import
 import authRouter from './routes/authRoute.js';
 import videoRouter from './routes/videoRoute.js';
+import commentRouter from './routes/commentRoute.js';
 
 // prisma import
 import {PrismaClient} from '@prisma/client';
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 });
 app.use(`${base_url}/auth`, authRouter);
 app.use(`${base_url}/video`, videoRouter);
+app.use(`${base_url}/comment`, commentRouter);
 
 // 🔥 error middleware 항상 마지막 미들웨어에 위치 🔥
 app.use(notFoundMiddleware);
