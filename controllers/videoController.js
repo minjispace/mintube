@@ -1,5 +1,5 @@
 import {StatusCodes} from 'http-status-codes';
-import {BadRequestError, NotFoundError, UnauthenticatedError} from '../errors/index.js';
+import {BadRequestError, NotFoundError} from '../errors/index.js';
 import {findUserByEmail} from '../services/user.services.js';
 import {createVideoToDatabase, deleteVideoById, findAllVideo, findSingleVideoById, updateVideoById} from '../services/video.services.js';
 
