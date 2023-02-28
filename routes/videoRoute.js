@@ -9,11 +9,7 @@ const router = express.Router();
 
 router.route('/').post(authenticateUser, authorizePermissionsForOnlyAdmin('ADMIN'), uploadFiles.single('video'), createVideo).get(getAllVideos);
 
-router
-  .route('/:id')
-  .get(getSingleVideo)
-  .patch(authenticateUser, authorizePermissionsForOnlyAdmin('ADMIN'), updateVideo)
-  .delete([authenticateUser, authorizePermissionsForOnlyAdmin('ADMIN')], deleteVideo);
+router.route('/:id').get(getSingleVideo).patch(authenticateUser, updateVideo).delete(authenticateUser, deleteVideo);
 
 //  export router
 export default router;

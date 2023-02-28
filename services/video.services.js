@@ -14,22 +14,27 @@ const createVideoToDatabase = (data) => {
   }
 };
 
+//  get all videos
 const findAllVideo = () => {
-  return db.video.findMany();
+  return db.video.findMany({});
 };
 
+//  get single video
 const findSingleVideoById = (id) => {
   return db.video.findUnique({
     where: {
-      id,
+      id: id.toString(),
     },
   });
 };
 
+// update video
 const updateVideoById = (id, data) => {
   const {title, description} = data;
   return db.video.update({
-    where: {id},
+    where: {
+      id: id.toString(),
+    },
     data: {
       title,
       description,
@@ -37,9 +42,12 @@ const updateVideoById = (id, data) => {
   });
 };
 
+// delete video
 const deleteVideoById = (id) => {
   return db.video.delete({
-    where: {id},
+    where: {
+      id: id.toString(),
+    },
   });
 };
 

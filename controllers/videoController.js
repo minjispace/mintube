@@ -2,6 +2,9 @@ import {StatusCodes} from 'http-status-codes';
 import {BadRequestError, NotFoundError} from '../errors/index.js';
 import {findUserByEmail} from '../services/user.services.js';
 import {createVideoToDatabase, deleteVideoById, findAllVideo, findSingleVideoById, updateVideoById} from '../services/video.services.js';
+import {authorizePermissionForOnlyOwner} from '../utils/index.js';
+
+// -------------------------------------------------------
 
 //  ✅ create video
 const createVideo = async (req, res) => {
@@ -47,11 +50,19 @@ const updateVideo = async (req, res) => {
     throw new BadRequestError('please provide all values');
   }
 
-  //  해당 video가 없을때
-  const updatedVideo = await updateVideoById(id, {title, description});
-  if (!updatedVideo) {
+  //  해당 videod를 내 db에서 찾아주자
+  const existingVideo = await findSingleVideoById(id);
+
+  //  existing video가 없을경우
+  if (!existingVideo) {
     throw new NotFoundError(`No video with id ${id}`);
   }
+
+  //  update video
+  const updatedVideo = await updateVideoById(id, {title, description});
+
+  //  owner check
+  await authorizePermissionForOnlyOwner(req.user.id, updatedVideo.userId);
 
   // res 요청
   res.status(StatusCodes.OK).json({video: updatedVideo});
@@ -61,11 +72,14 @@ const updateVideo = async (req, res) => {
 const deleteVideo = async (req, res) => {
   const {id} = req.params;
 
+  //  해당 id로 video를 찾을 수 없을때 해당 video 찾아서 없으면 에러날리기
   const video = await findSingleVideoById(id);
-  //  해당 id로 video를 찾을 수 없을때
   if (!video) {
     throw new NotFoundError(`No product with id ${id}`);
   }
+
+  //  owner check
+  await authorizePermissionForOnlyOwner(req.user.id, video.userId);
 
   //  delete video
   await deleteVideoById(id);
@@ -76,10 +90,10 @@ const deleteVideo = async (req, res) => {
 
 //  ✅ get all videos
 const getAllVideos = async (req, res) => {
-  const videos = await findAllVideo();
+  const videos = await findAllVideo(req.user);
   const videoCount = videos.length;
 
-  //  video가 없을경우
+  //  video가 없을 경우
   if (videoCount === 0) {
     throw new NotFoundError('no videos');
   }

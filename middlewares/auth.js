@@ -1,4 +1,4 @@
-import {BadRequestError, UnauthenticatedError, UnauthorizedError} from '../errors/index.js';
+import {UnauthenticatedError, UnauthorizedError} from '../errors/index.js';
 import {findTokenByIdFromDatabase} from '../services/token.services.js';
 import {attachCookiesToResponse, isTokenValid} from '../utils/index.js';
 

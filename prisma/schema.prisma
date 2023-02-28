@@ -59,9 +59,11 @@ model Video {
   fileUrl String @db.VarChar(255)
 
   //  user
-  userId  String
-  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Comment Comment[]
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // comment
+  comment Comment[]
 }
 
 //  model Comment
