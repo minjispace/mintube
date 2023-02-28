@@ -104,9 +104,9 @@ const getAllVideos = async (req, res) => {
 const getSingleVideo = async (req, res) => {
   const {id} = req.params;
 
-  //  해당 친 id로 우리의 video 정보가 존재하지않을때
-  const singleVideo = await findSingleVideoById(id);
-  if (!singleVideo) {
+  //  해당 친 id로 우리의 video 정보가 존재하지 않을 때
+  const video = await findSingleVideoById(id);
+  if (!video) {
     throw new NotFoundError(`No Video with id ${id}`);
   }
 
