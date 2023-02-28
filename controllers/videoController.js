@@ -34,7 +34,7 @@ const createVideo = async (req, res) => {
   const video = await createVideoToDatabase({title, description, fileUrl: file.location, userId: existingUser.id});
 
   //  res 요청
-  res.json({video});
+  res.status(StatusCodes.CREATED).json({video});
 };
 
 // ✅  update video
