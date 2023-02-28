@@ -67,7 +67,9 @@ const deleteVideo = async (req, res) => {
     throw new NotFoundError(`No product with id ${id}`);
   }
 
+  //  delete video
   await deleteVideoById(id);
+
   //  res 요청
   res.status(StatusCodes.OK).json({msg: 'Success! Video removed'});
 };
