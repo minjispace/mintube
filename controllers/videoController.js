@@ -73,8 +73,8 @@ const deleteVideo = async (req, res) => {
   const {id} = req.params;
 
   //  해당 id로 video를 찾을 수 없을때 해당 video 찾아서 없으면 에러날리기
-  const video = await findSingleVideoById(id);
-  if (!video) {
+  const existingVideo = await findSingleVideoById(id);
+  if (!existingVideo) {
     throw new NotFoundError(`No product with id ${id}`);
   }
 
@@ -105,8 +105,8 @@ const getSingleVideo = async (req, res) => {
   const {id} = req.params;
 
   //  해당 친 id로 우리의 video 정보가 존재하지 않을 때
-  const video = await findSingleVideoById(id);
-  if (!video) {
+  const existingVideo = await findSingleVideoById(id);
+  if (!existingVideo) {
     throw new NotFoundError(`No Video with id ${id}`);
   }
 
