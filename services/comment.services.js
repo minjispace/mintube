@@ -25,13 +25,19 @@ const findAlreadySubmittedUser = (userId, videoId) => {
 };
 
 // get all comments
-const findAllCommentsFromDatabase = (user) => {
+const findAllCommentsFromDatabase = () => {
   return db.comment.findMany({});
+};
+
+//  find by id comment
+const findCommentById = (id) => {
+  return db.comment.findFirst({
+    where: {id},
+  });
 };
 
 //  update comment
 const updateCommentFromDatabase = (id, message) => {
-  console.log(id, message, '@@ what is this');
   return db.comment.update({
     where: {
       id: id.toString(),
@@ -42,11 +48,11 @@ const updateCommentFromDatabase = (id, message) => {
   });
 };
 
-const deleteCommentFromDatabase = () => {
+const deleteCommentFromDatabase = (id) => {
   return db.comment.delete({
     where: {id},
   });
 };
 
 //  export functions
-export {createCommentToDatabase, findAlreadySubmittedUser, findAllCommentsFromDatabase, updateCommentFromDatabase, deleteCommentFromDatabase};
+export {createCommentToDatabase, findAlreadySubmittedUser, findAllCommentsFromDatabase, updateCommentFromDatabase, deleteCommentFromDatabase, findCommentById};
