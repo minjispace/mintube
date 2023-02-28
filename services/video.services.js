@@ -4,7 +4,6 @@ import {BadRequestError} from '../errors/index.js';
 
 //  create video
 const createVideoToDatabase = (data) => {
-  console.log(data, 'data');
   try {
     return db.video.create({
       data,

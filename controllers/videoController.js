@@ -4,13 +4,17 @@ import {createVideoToDatabase} from '../services/video.services.js';
 
 //  create video
 const createVideo = async (req, res) => {
-  console.log(req.user, '@@what is user');
   const {file} = req;
   const {title, description} = req.body;
-
+  console.log(file, 'file');
   //  file이 존재하지 않을때
   if (!file) {
     throw new BadRequestError('no file uploaded');
+  }
+
+  //  파일형식이 비디오 형식이 아닐때
+  if (!file.mimetype.startsWith('video')) {
+    throw new BadRequestError('please upload video file.');
   }
 
   //  field 하나라도 충족이 되지 않을때
@@ -26,7 +30,7 @@ const createVideo = async (req, res) => {
   }
 
   //  create database video
-  const video = await createVideoToDatabase({title, description, fileUrl: file.path, userId: existingUser.id});
+  const video = await createVideoToDatabase({title, description, fileUrl: file.location, userId: existingUser.id});
 
   //  res 요청
   res.json({video});
