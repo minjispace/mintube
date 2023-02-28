@@ -1,12 +1,13 @@
+import {StatusCodes} from 'http-status-codes';
 import {BadRequestError, UnauthenticatedError} from '../errors/index.js';
 import {findUserByEmail} from '../services/user.services.js';
-import {createVideoToDatabase} from '../services/video.services.js';
+import {createVideoToDatabase, findAllVideo, findSingleVideoById} from '../services/video.services.js';
 
-//  create video
+//  ✅ create video
 const createVideo = async (req, res) => {
   const {file} = req;
   const {title, description} = req.body;
-  console.log(file, 'file');
+
   //  file이 존재하지 않을때
   if (!file) {
     throw new BadRequestError('no file uploaded');
@@ -36,24 +37,40 @@ const createVideo = async (req, res) => {
   res.json({video});
 };
 
-// update video
+// ✅  update video
 const updateVideo = async (req, res) => {
   res.json({msg: 'update video'});
 };
 
-//  delete video
+//  ✅ delete video
 const deleteVideo = async (req, res) => {
   res.json({msg: 'delete video'});
 };
 
-//  get all videos
+//  ✅ get all videos
 const getAllVideos = async (req, res) => {
-  res.json({msg: 'get all videos'});
+  const videos = await findAllVideo();
+  const videoCount = videos.length;
+
+  //  video가 없을경우
+  if (videoCount === 0) {
+    throw new BadRequestError('no videos');
+  }
+  res.status(StatusCodes.OK).json({videos, count: videoCount});
 };
 
-//  get single video
+//  ✅ get single video
 const getSingleVideo = async (req, res) => {
-  res.json({msg: 'get single video'});
+  const {id} = req.params;
+
+  //  해당 친 id로 우리의 video 정보가 존재하지않을때
+  const singleVideo = await findSingleVideoById(id);
+  if (!singleVideo) {
+    throw new BadRequestError(`No Video with id ${id}`);
+  }
+
+  //  res 요청
+  res.status(StatusCodes.OK).json({video: singleVideo});
 };
 
 export {createVideo, updateVideo, deleteVideo, getAllVideos, getSingleVideo};

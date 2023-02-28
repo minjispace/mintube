@@ -14,4 +14,17 @@ const createVideoToDatabase = (data) => {
   }
 };
 
-export {createVideoToDatabase};
+const findAllVideo = () => {
+  return db.video.findMany();
+};
+
+const findSingleVideoById = (id) => {
+  console.log(id, 'id');
+  return db.video.findUnique({
+    where: {
+      id,
+    },
+  });
+};
+
+export {createVideoToDatabase, findAllVideo, findSingleVideoById};
