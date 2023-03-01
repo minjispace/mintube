@@ -1,5 +1,6 @@
 import db from '../db/connect.js';
 import {BadRequestError} from '../errors/index.js';
+import {videoRequiredInfo} from '../utils/prismaSelect.js';
 // ----------------------------------------------------
 
 //  create video
@@ -16,7 +17,9 @@ const createVideoToDatabase = (data) => {
 
 //  get all videos
 const findAllVideo = () => {
-  return db.video.findMany({});
+  return db.video.findMany({
+    select: videoRequiredInfo.select,
+  });
 };
 
 //  get single video
@@ -25,6 +28,7 @@ const findSingleVideoById = (id) => {
     where: {
       id: id.toString(),
     },
+    select: videoRequiredInfo.select,
   });
 };
 

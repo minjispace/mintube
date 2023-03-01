@@ -1,4 +1,6 @@
 import db from '../db/connect.js';
+import {commentRequiredInfo, videoRequiredInfo} from '../utils/prismaSelect.js';
+
 // ----------------------------------------------
 
 //  create comment
@@ -26,13 +28,16 @@ const findAlreadySubmittedUser = (userId, videoId) => {
 
 // get all comments
 const findAllCommentsFromDatabase = () => {
-  return db.comment.findMany({});
+  return db.comment.findMany({
+    select: commentRequiredInfo.select,
+  });
 };
 
 //  find by id comment
 const findCommentById = (id) => {
   return db.comment.findFirst({
     where: {id},
+    select: commentRequiredInfo.select,
   });
 };
 
@@ -54,5 +59,19 @@ const deleteCommentFromDatabase = (id) => {
   });
 };
 
+//  count comments
+const countComments = () => {
+  return db.comment.count();
+};
+
+// group by video id
+const groubByVideoId = () => {
+  return db.comment.groupBy({
+    by: ['videoId'],
+    _count: {
+      _all: true,
+    },
+  });
+};
 //  export functions
-export {createCommentToDatabase, findAlreadySubmittedUser, findAllCommentsFromDatabase, updateCommentFromDatabase, deleteCommentFromDatabase, findCommentById};
+export {createCommentToDatabase, findAlreadySubmittedUser, findAllCommentsFromDatabase, updateCommentFromDatabase, deleteCommentFromDatabase, findCommentById, countComments, groubByVideoId};

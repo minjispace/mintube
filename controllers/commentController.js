@@ -1,6 +1,14 @@
 import {StatusCodes} from 'http-status-codes';
 import {BadRequestError, NotFoundError} from '../errors/index.js';
-import {createCommentToDatabase, deleteCommentFromDatabase, findAllCommentsFromDatabase, findAlreadySubmittedUser, updateCommentFromDatabase} from '../services/comment.services.js';
+import {
+  countComments,
+  createCommentToDatabase,
+  deleteCommentFromDatabase,
+  findAllCommentsFromDatabase,
+  findAlreadySubmittedUser,
+  groubByVideoId,
+  updateCommentFromDatabase,
+} from '../services/comment.services.js';
 import {findSingleVideoById} from '../services/video.services.js';
 
 //  ✅create comment
@@ -65,7 +73,9 @@ const deleteComment = async (req, res) => {
 //  ✅ get all comments
 const getAllComments = async (req, res) => {
   const comments = await findAllCommentsFromDatabase(req.user);
-  res.status(StatusCodes.CREATED).json({comments});
+
+  const groupByComment = await groubByVideoId();
+  res.status(StatusCodes.CREATED).json({groupByComment});
 };
 
 export {createComment, deleteComment, updateComment, getAllComments};

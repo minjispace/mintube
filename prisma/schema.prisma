@@ -78,7 +78,7 @@ model Comment {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // video
-  videoId String @unique
+  videoId String
   video   Video  @relation(fields: [videoId], references: [id])
 }
 

@@ -1,5 +1,6 @@
 import {StatusCodes} from 'http-status-codes';
 import {BadRequestError, NotFoundError} from '../errors/index.js';
+import {countComments} from '../services/comment.services.js';
 import {findUserByEmail} from '../services/user.services.js';
 import {createVideoToDatabase, deleteVideoById, findAllVideo, findSingleVideoById, updateVideoById} from '../services/video.services.js';
 
@@ -74,18 +75,25 @@ const deleteVideo = async (req, res) => {
 //  ✅ get all videos
 const getAllVideos = async (req, res) => {
   const videos = await findAllVideo(req.user);
+
+  //  videos의 총 수
   const videoCount = videos.length;
 
   //  video가 없을 경우
   if (videoCount === 0) {
     throw new NotFoundError('no videos');
   }
-  res.status(StatusCodes.OK).json({videos, count: videoCount});
+
+  // res 요청
+  res.status(StatusCodes.OK).json({videos, videoCount: videoCount});
 };
 
 //  ✅ get single video
 const getSingleVideo = async (req, res) => {
   const {id} = req.params;
+
+  //  이 video에 달린 commnets 총 수
+  const commentCount = await countComments();
 
   //  해당 친 id로 우리의 video 정보가 존재하지 않을 때
   const existingVideo = await findSingleVideoById(id);
@@ -94,7 +102,7 @@ const getSingleVideo = async (req, res) => {
   }
 
   //  res 요청
-  res.status(StatusCodes.OK).json({video: singleVideo});
+  res.status(StatusCodes.OK).json({video: existingVideo, commentCount});
 };
 
 export {createVideo, updateVideo, deleteVideo, getAllVideos, getSingleVideo};
