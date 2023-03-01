@@ -1,5 +1,7 @@
-import {UnauthenticatedError, UnauthorizedError} from '../errors/index.js';
+import {NotFoundError, UnauthenticatedError, UnauthorizedError} from '../errors/index.js';
+import {findCommentById} from '../services/comment.services.js';
 import {findTokenByIdFromDatabase} from '../services/token.services.js';
+import {findSingleVideoById} from '../services/video.services.js';
 import {attachCookiesToResponse, isTokenValid} from '../utils/index.js';
 
 // authenticateUser middleware
@@ -49,4 +51,34 @@ const authorizePermissionsForOnlyAdmin = (role) => {
   };
 };
 
-export {authenticateUser, authorizePermissionsForOnlyAdmin};
+//  owner check middleware
+const authorizePermissionOwner = (type) => {
+  return async (req, res, next) => {
+    let result;
+    let {id: providedId} = req.params;
+    let {id: userId} = req.user;
+
+    //  video일 경우
+    if (type === 'video') {
+      result = await findSingleVideoById(providedId);
+    }
+
+    //  comment일 경우
+    if (type === 'comment') {
+      result = await findCommentById(providedId);
+    }
+
+    //  existing result가 없을경우
+    if (!result) {
+      throw new NotFoundError(`No video with id ${providedId}`);
+    }
+
+    //  owner check
+    if (userId !== result.userId) {
+      throw new UnauthorizedError('Unauthorized to access this user.');
+    }
+    next();
+  };
+};
+
+export {authenticateUser, authorizePermissionsForOnlyAdmin, authorizePermissionOwner};

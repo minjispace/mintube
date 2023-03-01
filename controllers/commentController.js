@@ -1,8 +1,7 @@
 import {StatusCodes} from 'http-status-codes';
 import {BadRequestError, NotFoundError} from '../errors/index.js';
-import {createCommentToDatabase, deleteCommentFromDatabase, findAllCommentsFromDatabase, findAlreadySubmittedUser, findCommentById, updateCommentFromDatabase} from '../services/comment.services.js';
+import {createCommentToDatabase, deleteCommentFromDatabase, findAllCommentsFromDatabase, findAlreadySubmittedUser, updateCommentFromDatabase} from '../services/comment.services.js';
 import {findSingleVideoById} from '../services/video.services.js';
-import {authorizePermissionForOnlyOwner} from '../utils/ownerCheck.js';
 
 //  ✅create comment
 const createComment = async (req, res) => {
@@ -46,17 +45,6 @@ const updateComment = async (req, res) => {
     throw new BadRequestError('please provide message comment for this video');
   }
 
-  //  해당 comment 나의 db에서 찾기
-  const existingComment = await findCommentById(id);
-
-  //  만약 존재하지 않는다면 에러
-  if (!existingComment) {
-    throw new NotFoundError(`No Comment with id ${id}`);
-  }
-
-  //  작성한 유저가 맞는지 확인 owner check
-  await authorizePermissionForOnlyOwner(req.user.id, existingComment.userId);
-
   //  update comment
   const comment = await updateCommentFromDatabase(id, message);
 
@@ -67,17 +55,6 @@ const updateComment = async (req, res) => {
 //  ✅ delete comment
 const deleteComment = async (req, res) => {
   const {id} = req.params;
-
-  //  해당 comment 나의 db에서 찾기
-  const existingComment = await findCommentById(id);
-
-  //  만약 존재하지 않는다면 에러
-  if (!existingComment) {
-    throw new NotFoundError(`No Comment with id ${id}`);
-  }
-
-  //  owner check
-  await authorizePermissionForOnlyOwner(req.user.id, existingComment.userId);
 
   //  delete comment
   await deleteCommentFromDatabase(id);

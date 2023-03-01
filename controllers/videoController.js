@@ -2,7 +2,6 @@ import {StatusCodes} from 'http-status-codes';
 import {BadRequestError, NotFoundError} from '../errors/index.js';
 import {findUserByEmail} from '../services/user.services.js';
 import {createVideoToDatabase, deleteVideoById, findAllVideo, findSingleVideoById, updateVideoById} from '../services/video.services.js';
-import {authorizePermissionForOnlyOwner} from '../utils/index.js';
 
 // -------------------------------------------------------
 
@@ -21,7 +20,7 @@ const createVideo = async (req, res) => {
     throw new BadRequestError('please upload video file.');
   }
 
-  //  field 하나라도 충족이 되지 않을때
+  //  field 하나라도 충족이 되지 않을 때
   if (!title || !description) {
     throw new BadRequestError('please provide all values');
   }
@@ -45,24 +44,15 @@ const updateVideo = async (req, res) => {
   const {id} = req.params;
   const {title, description} = req.body;
 
-  //  fields중 하나라도 충족이 되지않을때
+  //  fields중 하나라도 충족이 되지 않을때
   if (!title || !description) {
     throw new BadRequestError('please provide all values');
   }
 
-  //  해당 videod를 내 db에서 찾아주자
-  const existingVideo = await findSingleVideoById(id);
-
-  //  existing video가 없을경우
-  if (!existingVideo) {
-    throw new NotFoundError(`No video with id ${id}`);
-  }
+  //  id 검사하고 하는일은 authorizePermissionOwner 미들웨어해서 해줌
 
   //  update video
   const updatedVideo = await updateVideoById(id, {title, description});
-
-  //  owner check
-  await authorizePermissionForOnlyOwner(req.user.id, updatedVideo.userId);
 
   // res 요청
   res.status(StatusCodes.OK).json({video: updatedVideo});
@@ -72,14 +62,7 @@ const updateVideo = async (req, res) => {
 const deleteVideo = async (req, res) => {
   const {id} = req.params;
 
-  //  해당 id로 video를 찾을 수 없을때 해당 video 찾아서 없으면 에러날리기
-  const existingVideo = await findSingleVideoById(id);
-  if (!existingVideo) {
-    throw new NotFoundError(`No product with id ${id}`);
-  }
-
-  //  owner check
-  await authorizePermissionForOnlyOwner(req.user.id, video.userId);
+  //  id 검사하고 하는일은 authorizePermissionOwner 미들웨어해서 해줌
 
   //  delete video
   await deleteVideoById(id);
