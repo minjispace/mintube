@@ -1,5 +1,5 @@
 const ListProduct = () => {
-  return <div>list product</div>;
+  return <div className="text-white">list product</div>;
 };
 
 export default ListProduct;

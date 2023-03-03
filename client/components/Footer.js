@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
-    <footer className=" fixed left-0 right-0 bottom-0 w-full p-4 bg-white rounded-t-lg   md:p-6 dark:bg-gray-800">
-      <span className="text-sm text-gray-500 sm:text-center  dark:text-gray-400">
+    <footer className=" fixed left-0 right-0 bottom-0 w-full p-4   md:p-6 bg-gray-800">
+      <span className="text-ml  sm:text-center text-gray-300">
         © 2023{' '}
         <a href="/" className="hover:underline">
           Mintube

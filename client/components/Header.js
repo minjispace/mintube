@@ -1,10 +1,15 @@
 const Header = () => {
   return (
-    <nav className="justify-between px-4 py-3 text-gray-700 border border-gray-200 rounded-b-xl  sm:flex sm:px-5 bg-gray-50 dark:bg-gray-800 dark:border-gray-700" aria-label="Breadcrumb">
-      {/*  title */}
-      <a href="/" className="ml-1 text-xl font-medium tracking-widest text-gray-700 hover:text-blue-600 md:ml-2 dark:text-gray-400 dark:hover:text-white">
-        Minjitube
-      </a>
+    <nav className="flex justify-between items-center px-4 py-5 text-gray-300 border  sm:flex sm:px-5  bg-gray-800 border-gray-800" aria-label="Breadcrumb">
+      {/*  youtube logo */}
+      <div className="flex items-center">
+        {/*   logo */}
+        <img src="images/youtube.svg" />
+        {/*  title */}
+        <a href="/" className="ml-1 text-xl font-medium tracking-widest  hover:text-blue-600 md:ml-2 dark:hover:text-white">
+          Minjitube
+        </a>
+      </div>
 
       {/*  button */}
       <button
