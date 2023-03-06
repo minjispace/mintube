@@ -207,7 +207,7 @@ const updateUserPassword = async (req, res) => {
 // ------------------------------------------------
 // ✅  get user all videos
 const getUserVideos = async (req, res) => {
-  res.json('get user all videosr');
+  res.json('get user all videos');
 };
 
 // ------------------------------------------------

@@ -5,6 +5,10 @@ import 'express-async-errors';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 //  middleware import
 import {notFoundMiddleware, errorHandlerMiddleware} from './middlewares/index.js';
@@ -28,8 +32,12 @@ const base_url = '/api/v1';
 const prisma = new PrismaClient();
 
 // extra packages middleware setup
+app.set('trust proxy', 1);
 app.use(morgan('dev'));
 app.use(express.json());
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
 app.use(cors());
 app.use(cookieParser(process.env.JWT_SECRET));
 
