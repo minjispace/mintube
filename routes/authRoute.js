@@ -1,5 +1,5 @@
 import express from 'express';
-import {registerUser, loginUser, updateUserName, logoutUser, getUserComments, getUserVideos, readyUpdateUserPassword, updateUserPassword} from '../controllers/authController.js';
+import {registerUser, loginUser, updateUserName, logoutUser, getUserComments, getUserVideos, forgotUserPassword, updateUserPassword} from '../controllers/authController.js';
 import {authenticateUser} from '../middlewares/index.js';
 // ------------------------------------------
 
@@ -13,7 +13,7 @@ router.route('/logout').delete(authenticateUser, logoutUser);
 
 //  update
 router.route('/user/name').patch(authenticateUser, updateUserName);
-router.route('/ready/user/password').post(authenticateUser, readyUpdateUserPassword);
+router.route('/forgot/user/password').post(authenticateUser, forgotUserPassword);
 router.route('/user/password').patch(authenticateUser, updateUserPassword);
 
 //  get user infos

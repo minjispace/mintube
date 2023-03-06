@@ -144,7 +144,7 @@ const updateUserName = async (req, res) => {
 
 // ------------------------------------------------
 // ✅ ready for update user password controller
-const readyUpdateUserPassword = async (req, res) => {
+const forgotUserPassword = async (req, res) => {
   const {originalPassword} = req.body;
 
   //  fields에서 하나라도 충족되지 않았을 때
@@ -217,4 +217,4 @@ const getUserComments = async (req, res) => {
 };
 
 // ------------------------------------------------
-export {registerUser, loginUser, updateUserName, readyUpdateUserPassword, logoutUser, getUserComments, getUserVideos, updateUserPassword};
+export {registerUser, loginUser, updateUserName, forgotUserPassword, logoutUser, getUserComments, getUserVideos, updateUserPassword};
