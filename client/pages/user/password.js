@@ -1,7 +1,7 @@
 import {QueryCache, useQuery} from '@tanstack/react-query';
 import axios from 'axios';
 import React from 'react';
-import {Form, Loading} from '../../components';
+import {FormRow, Loading} from '../../components';
 
 const queryCache = new QueryCache({
   onError: (error) => {
@@ -44,8 +44,8 @@ const password = () => {
   return (
     <div className="grid justify-center">
       <h2 className="text-center text-white text-4xl mb-10 mt-10">New Password</h2>
-      <Form type="login" field="Your Email" />
-      <Form type="login" field="New Password" />
+      <FormRow type="login" field="Your Email" />
+      <FormRow type="login" field="New Password" />
       {error && <h2 className="text-white">{error.response.data.msg}</h2>}
       <button
         type="login"

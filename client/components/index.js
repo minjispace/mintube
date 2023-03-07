@@ -6,5 +6,6 @@ import SearchForm from './SearchForm';
 import Error from './Error';
 import Loading from './Loading';
 import Layout from './Layout';
+import UploadForm from './UploadForm';
 
-export {Header, Footer, ListProduct, FormRow, SearchForm, Error, Loading, Layout};
+export {Header, Footer, ListProduct, FormRow, SearchForm, Error, Loading, Layout, UploadForm};

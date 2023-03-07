@@ -6,12 +6,16 @@ import {useState} from 'react';
 import {useRouter} from 'next/router';
 
 const login = () => {
+  //  router
   const router = useRouter();
+
+  //  state
   const [values, setValues] = useState({
     email: '',
     password: '',
   });
 
+  //  react-query
   const {isError, error, refetch} = useQuery({
     queryKey: ['loginUser'],
     queryFn: () => loginUserData({email: values.email, password: values.password}),
@@ -22,10 +26,12 @@ const login = () => {
     },
   });
 
+  //  on change function
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value});
   };
 
+  //  on submit function
   const onSubmit = (e) => {
     e.preventDefault();
     const {email, password} = values;
@@ -34,9 +40,13 @@ const login = () => {
     refetch();
   };
 
+  //  rendering
   return (
     <div className="grid justify-center">
+      {/*  error */}
       {isError && <h2 className="text-rose-600 my-3">{error.response.data.msg}</h2>}
+
+      {/*  title */}
       <h2 className="text-center text-white text-4xl mb-10 mt-10">Login</h2>
 
       {/*  form */}

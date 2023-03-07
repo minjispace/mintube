@@ -1,7 +1,7 @@
 import {useQuery} from '@tanstack/react-query';
 import axios from 'axios';
 import React from 'react';
-import {Form, Loading} from '../../components';
+import {FormRow, Loading} from '../../components';
 
 const name = () => {
   const fetchData = async () => {
@@ -27,7 +27,7 @@ const name = () => {
   return (
     <div className="grid justify-center">
       <h2 className="text-center text-white text-4xl mb-10 mt-10">New Name</h2>
-      <Form type="login" field="New Name" />
+      <FormRow type="login" field="New Name" />
       {error && <h2 className="text-white">{error.response.data.msg}</h2>}
       <button
         type="update name"

@@ -6,7 +6,10 @@ import Link from 'next/link';
 import {useRouter} from 'next/router';
 
 const Register = () => {
+  //  router
   const router = useRouter();
+
+  //  state
   const [values, setValues] = useState({
     name: '',
     password: '',
@@ -38,14 +41,17 @@ const Register = () => {
   //  loading
   if (isLoading) return <Loading />;
 
+  //  rendering
   return (
     <div className="grid justify-center">
+      {/*  error */}
       {isError && <h3 className="text-rose-600 my-3 text-center">{error.response.data.msg}</h3>}
 
+      {/*  title */}
       <h2 className="text-center text-white text-4xl mb-10 mt-10">Register</h2>
 
+      {/*  forms */}
       <form onSubmit={onSubmit}>
-        {/*  forms */}
         <FormRow type="name" name="name" value={values.name} onChange={onChange} />
         <FormRow type="email" name="email" value={values.email} onChange={onChange} />
         <FormRow type="password" name="password" value={values.password} onChange={onChange} />
