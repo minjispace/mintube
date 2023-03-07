@@ -1,33 +1,14 @@
 //  components
-import {Footer, Header, Layout} from '../components';
+import {Layout} from '../components';
 import '../styles/globals.css';
 
 //  react-query
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import {useEffect, useState} from 'react';
-import Register from './register';
+
+//  next
 import Link from 'next/link';
 
-//  next-auth
-
 // --------------------------------------------------------------------------
-import {QueryCache} from '@tanstack/react-query';
-
-const queryCache = new QueryCache({
-  onError: (error) => {
-    console.log(error);
-  },
-  onSuccess: (data) => {
-    console.log(data);
-  },
-  onSettled: (data, error) => {
-    console.log(data, error);
-  },
-});
-
-const query = queryCache.find({queryKey: ['registerUser']});
-
-console.log(query, 'query');
 
 //  react- query client
 const queryClient = new QueryClient({

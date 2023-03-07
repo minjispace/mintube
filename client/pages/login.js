@@ -1,23 +1,25 @@
 import {useQuery} from '@tanstack/react-query';
-import {FormRow, Loading} from '../components';
+import {FormRow} from '../components';
 import Link from 'next/link';
 import {loginUserData} from '../utils/axios';
 import {useState} from 'react';
+import {useRouter} from 'next/router';
 
 const login = () => {
+  const router = useRouter();
   const [values, setValues] = useState({
-    name: '',
+    email: '',
     password: '',
   });
 
-  const {isInitialLoading, isError, data, error, refetch, isFetching} = useQuery({
+  const {isError, error, refetch} = useQuery({
     queryKey: ['loginUser'],
-    queryFn: (loginUser) => loginUserData(loginUser),
-    onError: (error) => {
-      console.log(error);
-    },
-    refetchOnWindowFocus: false,
+    queryFn: () => loginUserData({email: values.email, password: values.password}),
     enabled: false,
+    onSuccess: () => {
+      router.push('/');
+      setValues({email: '', password: ''});
+    },
   });
 
   const onChange = (e) => {
@@ -26,16 +28,15 @@ const login = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log(e.target, 'e.target');
+    const {email, password} = values;
+    const loginUser = {email, password};
+    setValues(loginUser);
+    refetch();
   };
-
-  if (isInitialLoading) return <Loading />;
-  if (isFetching) return <h2 className="text-white">fetching...</h2>;
-  if (data) return console.log(data.user, 'login user');
 
   return (
     <div className="grid justify-center">
-      {error && <h2 className="text-red my-3">{error.response.data.msg}</h2>}
+      {isError && <h2 className="text-rose-600 my-3">{error.response.data.msg}</h2>}
       <h2 className="text-center text-white text-4xl mb-10 mt-10">Login</h2>
 
       {/*  form */}
@@ -46,8 +47,7 @@ const login = () => {
         {/*  login button */}
         <button
           type="login"
-          className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  mt-10 "
-          onClick={() => refetch()}
+          className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  mt-5 "
         >
           login
         </button>
