@@ -7,7 +7,7 @@ import {useRouter} from 'next/router';
 import {useGlobalContext} from '../context/AppContext';
 
 const login = () => {
-  const {saveUser} = useGlobalContext();
+  // const {saveUser} = useGlobalContext();
 
   //  router
   const router = useRouter();
