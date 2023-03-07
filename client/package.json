@@ -14,8 +14,11 @@
     "cross-env": "^7.0.3",
     "http-proxy-middleware": "^2.0.6",
     "next": "13.1.6",
+    "next-auth": "^4.20.1",
     "react": "18.2.0",
+    "react-cookie": "^4.1.1",
     "react-dom": "18.2.0",
+    "react-query": "^3.39.3",
     "react-router-dom": "^6.8.2"
   },
   "devDependencies": {

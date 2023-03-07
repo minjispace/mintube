@@ -2,9 +2,18 @@ import {ListProduct, SearchForm} from '../components';
 
 export default function Home() {
   return (
-    <div>
+    <>
+      <h1 className="text-white"> protected home</h1>
       <SearchForm />
       <ListProduct />
-    </div>
+    </>
   );
 }
+
+// export async function getStaticProps(context) {
+//   return {
+//     props: {
+//       protected: true,
+//     },
+//   };
+// }

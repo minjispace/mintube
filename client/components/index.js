@@ -1,9 +1,10 @@
 import Header from './Header';
 import Footer from './Footer';
 import ListProduct from './ListProduct';
-import Form from './Form';
+import FormRow from './FormRow';
 import SearchForm from './SearchForm';
 import Error from './Error';
 import Loading from './Loading';
+import Layout from './Layout';
 
-export {Header, Footer, ListProduct, Form, SearchForm, Error, Loading};
+export {Header, Footer, ListProduct, FormRow, SearchForm, Error, Loading, Layout};
