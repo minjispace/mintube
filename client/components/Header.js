@@ -1,27 +1,22 @@
 import {useQuery} from '@tanstack/react-query';
-import axios from 'axios';
-import Loading from './Loading';
 import Link from 'next/link';
+import {logoutUserData} from '../utils/axios';
+import {useGlobalContext} from '../context/AppContext';
 // ---------------------------------------------------------
 const Header = () => {
-  const fetchData = async () => {
-    return await axios.delete('/api/v1/auth/logout');
-  };
+  const {user} = useGlobalContext();
 
-  const {isInitialLoading, isError, data, error, refetch, isFetching} = useQuery({
+  const {isError, data, error, refetch} = useQuery({
     queryKey: ['logoutUser'],
-    queryFn: fetchData,
+    queryFn: logoutUserData,
     onError: (error) => {
       console.log(error.response.data.msg);
     },
-    refetchOnWindowFocus: false,
+    onSuccess: () => {
+      router.push('/login');
+    },
     enabled: false,
   });
-
-  if (isInitialLoading) return <Loading />;
-  if (isFetching) return <h2 className="text-white">fetching...</h2>;
-
-  if (data) return console.log(data.user, 'logout user');
 
   return (
     <nav className="flex justify-between items-center px-4 py-5 text-gray-300 border  sm:flex sm:px-5  bg-gray-800 border-gray-800" aria-label="Breadcrumb">
@@ -35,8 +30,11 @@ const Header = () => {
         </a>
       </div>
 
+      {/*  error */}
+      {isError && <h2 className="text-rose-600">{error.response.data.msg}</h2>}
+
+      {/*  button */}
       <div>
-        {/*  button */}
         <button
           id="dropdownDefault"
           data-dropdown-toggle="dropdown"

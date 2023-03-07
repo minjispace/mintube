@@ -19,7 +19,7 @@ const Register = () => {
   //  react-query
   const {isLoading, isError, error, mutate} = useMutation({
     mutationFn: (newUser) => registerUserData(newUser),
-    mutationKey: 'registerUser',
+    mutationKey: ['registerUser'],
     onSuccess: () => {
       router.push('/login');
     },

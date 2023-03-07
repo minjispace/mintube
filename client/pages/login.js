@@ -4,8 +4,11 @@ import Link from 'next/link';
 import {loginUserData} from '../utils/axios';
 import {useState} from 'react';
 import {useRouter} from 'next/router';
+import {useGlobalContext} from '../context/AppContext';
 
 const login = () => {
+  const {saveUser} = useGlobalContext();
+
   //  router
   const router = useRouter();
 
@@ -16,11 +19,14 @@ const login = () => {
   });
 
   //  react-query
-  const {isError, error, refetch} = useQuery({
+  const {isError, error, refetch, data} = useQuery({
     queryKey: ['loginUser'],
     queryFn: () => loginUserData({email: values.email, password: values.password}),
     enabled: false,
-    onSuccess: () => {
+    staleTime: 1000 * 60 * 60,
+
+    onSuccess: (data) => {
+      saveUser(data.data.user);
       router.push('/');
       setValues({email: '', password: ''});
     },
@@ -40,6 +46,7 @@ const login = () => {
     refetch();
   };
 
+  console.log(data, 'data');
   //  rendering
   return (
     <div className="grid justify-center">
