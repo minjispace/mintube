@@ -1,10 +1,12 @@
-//  components
-import {Layout} from '../components';
-import '../styles/globals.css';
+// components
+import "../styles/globals.css";
 
 //  react-query
-import AppProvider from '../context/AppContext';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
+import {Header} from "../components";
+
+// next-auth
+import {SessionProvider} from "next-auth/react";
 
 //--------------------------------------------------------------
 
@@ -20,15 +22,14 @@ const queryClient = new QueryClient({
 });
 
 //  app setting
-function App({Component, pageProps}) {
+function App({Component, pageProps: {session, ...pageProps}}) {
   return (
-    <AppProvider>
+    <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <Header />
+        <Component {...pageProps} />
       </QueryClientProvider>
-    </AppProvider>
+    </SessionProvider>
   );
 }
 

@@ -1,64 +1,59 @@
-import {useQuery} from '@tanstack/react-query';
-import {FormRow} from '../components';
-import Link from 'next/link';
-import {loginUserData} from '../utils/axios';
-import {useState} from 'react';
-import {useRouter} from 'next/router';
-import {useGlobalContext} from '../context/AppContext';
+import {useMutation} from "@tanstack/react-query";
+import {useState} from "react";
+import {FormRow, Loading} from "../components";
+import {registerUserData} from "../utils/axios";
+import Link from "next/link";
+import {useRouter} from "next/router";
 
-const login = () => {
-  // const {saveUser} = useGlobalContext();
-
+const Register = () => {
   //  router
   const router = useRouter();
 
   //  state
   const [values, setValues] = useState({
-    email: '',
-    password: '',
+    name: "",
+    password: "",
+    email: "",
   });
 
   //  react-query
-  const {isError, error, refetch, data} = useQuery({
-    queryKey: ['loginUser'],
-    queryFn: () => loginUserData({email: values.email, password: values.password}),
-    enabled: false,
-    staleTime: 1000 * 60 * 60,
-
-    onSuccess: (data) => {
-      saveUser(data.data.user);
-      router.push('/');
-      setValues({email: '', password: ''});
+  const {isLoading, isError, error, mutate} = useMutation({
+    mutationFn: (newUser) => registerUserData(newUser),
+    mutationKey: ["registerUser"],
+    onSuccess: () => {
+      router.push("/login");
     },
   });
 
-  //  on change function
+  //  onChange
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value});
   };
 
-  //  on submit function
   const onSubmit = (e) => {
     e.preventDefault();
-    const {email, password} = values;
-    const loginUser = {email, password};
-    setValues(loginUser);
-    refetch();
+    const {name, email, password} = values;
+    const registerNewUser = {name, email, password};
+    mutate(registerNewUser);
+    setValues({name: "", email: "", password: ""});
   };
 
-  console.log(data, 'data');
+  //  loading
+  if (isLoading) return <Loading />;
+
   //  rendering
   return (
-    <div className="grid justify-center">
-      {/*  error */}
-      {isError && <h2 className="text-rose-600 my-3">{error.response.data.msg}</h2>}
-
+    <div className=" bg-gray-900 h-screen pt-10">
       {/*  title */}
-      <h2 className="text-center text-white text-4xl mb-10 mt-10">Login</h2>
+      <h2 className="text-center text-white text-4xl">Register</h2>
+
+      {/*  error */}
+      {/* {isError && <h2 className="text-rose-600 my-3">{error?.response?.data?.msg}</h2>} */}
 
       {/*  form */}
-      <form onSubmit={onSubmit}>
+      <form className="mt-10 grid justify-center" onSubmit={onSubmit}>
         <FormRow name="email" type="email" field="email" onChange={onChange} />
+        <FormRow name="username" type="username" field="username" onChange={onChange} />
         <FormRow name="password" type="password" field="password" onChange={onChange} />
 
         {/*  login button */}
@@ -66,18 +61,18 @@ const login = () => {
           type="login"
           className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  mt-5 "
         >
-          login
+          Register
         </button>
 
         {/*  link button */}
-        <div className="my-5">
+        <div className="my-10">
           <p className="text-white py-3">
-            Don't have an account?
+            Already have user?
             <Link
               className="py-2.5 px-5 mx-3  mr-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-              href="/register"
+              href="/login"
             >
-              Register
+              Login
             </Link>
           </p>
         </div>
@@ -86,4 +81,4 @@ const login = () => {
   );
 };
 
-export default login;
+export default Register;
