@@ -4,12 +4,10 @@ import {FormRow, Loading} from "../components";
 import {registerUserData} from "../utils/axios";
 import Link from "next/link";
 import {useRouter} from "next/router";
+import {toast} from "react-hot-toast";
 
 const Register = () => {
-  //  router
   const router = useRouter();
-
-  //  state
   const [values, setValues] = useState({
     name: "",
     password: "",
@@ -20,9 +18,8 @@ const Register = () => {
   const {isLoading, isError, error, mutate} = useMutation({
     mutationFn: (newUser) => registerUserData(newUser),
     mutationKey: ["registerUser"],
-    onSuccess: () => {
-      router.push("/login");
-    },
+    onError: (error) => toast.error(error.response.data.msg),
+    onSuccess: () => router.push("/login"),
   });
 
   //  onChange
@@ -35,7 +32,6 @@ const Register = () => {
     const {name, email, password} = values;
     const registerNewUser = {name, email, password};
     mutate(registerNewUser);
-    setValues({name: "", email: "", password: ""});
   };
 
   //  loading
@@ -47,13 +43,10 @@ const Register = () => {
       {/*  title */}
       <h2 className="text-center text-white text-4xl">Register</h2>
 
-      {/*  error */}
-      {/* {isError && <h2 className="text-rose-600 my-3">{error?.response?.data?.msg}</h2>} */}
-
       {/*  form */}
       <form className="mt-10 grid justify-center" onSubmit={onSubmit}>
         <FormRow name="email" type="email" field="email" onChange={onChange} />
-        <FormRow name="username" type="username" field="username" onChange={onChange} />
+        <FormRow name="name" type="name" field="name" onChange={onChange} />
         <FormRow name="password" type="password" field="password" onChange={onChange} />
 
         {/*  login button */}

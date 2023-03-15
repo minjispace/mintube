@@ -1,3 +1,4 @@
+import {json} from "express";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import {loginUserData} from "../../../utils/axios";
@@ -6,30 +7,49 @@ export const nextOption = {
   providers: [
     // login
     CredentialsProvider({
-      id: "credentials",
-      name: "credentials",
-      type: "credentials",
+      id: "login",
+      name: "login",
       credentials: {
         email: {label: "email", type: "email", placeholder: "email"},
         password: {label: "Password", type: "password"},
       },
 
       async authorize(credentials, req) {
-        console.log("1");
-        console.log(credentials, "credentials");
-        // const {email, password} = credentials;
-        // const user = await loginUserData({email, password});
-        // console.log(user, "credential user");
-        // return credentials;
-        return credentials;
+        const {email, password} = credentials;
+
+        try {
+          const {
+            data: {user},
+          } = await loginUserData({email, password});
+          return user;
+        } catch (error) {
+          const errorMsg = error.response.data.msg;
+          throw new Error(errorMsg);
+        }
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: "/login",
     signOut: "/",
+    error: "/login",
   },
-  secret: "secret",
+  callbacks: {
+    async signIn({user, account, profile, email, credentials}) {
+      console.log({user, account, profile, email, credentials}), "@@@";
+      return true;
+    },
+    async redirect({url, baseUrl}) {
+      return baseUrl;
+    },
+    async session({session, user, token}) {
+      return session;
+    },
+    async jwt({token, user, account, profile, isNewUser}) {
+      return token;
+    },
+  },
 };
 
 export default NextAuth(nextOption);

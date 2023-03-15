@@ -3,11 +3,13 @@ import "../styles/globals.css";
 
 //  react-query
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
-import {Header} from "../components";
 
 // next-auth
 import {SessionProvider} from "next-auth/react";
 
+//  toast
+import {Toaster} from "react-hot-toast";
+import {Header} from "../components";
 //--------------------------------------------------------------
 
 //  react- query client
@@ -28,6 +30,7 @@ function App({Component, pageProps: {session, ...pageProps}}) {
       <QueryClientProvider client={queryClient}>
         <Header />
         <Component {...pageProps} />
+        <Toaster position="top-center" />
       </QueryClientProvider>
     </SessionProvider>
   );
