@@ -3,6 +3,7 @@ import axios from "axios";
 //  base api
 export const axiosAPI = axios.create({
   baseURL: "http://localhost:5000/api/v1",
+  withCredentials: true,
 });
 
 //  register api
@@ -28,6 +29,7 @@ const updateUserNameData = async (name) => {
 };
 //  forgot password api
 const forgotPasswordData = async (originalPassword) => {
+  console.log(originalPassword, "axios password");
   return await axiosAPI.post("/auth/forgot/user/password", {
     originalPassword,
   });
