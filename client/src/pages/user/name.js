@@ -1,42 +1,48 @@
-import {useQuery} from '@tanstack/react-query';
-import axios from 'axios';
-import React from 'react';
-import {FormRow, Loading} from '../../components';
+import {useQuery} from "@tanstack/react-query";
+import React, {useState} from "react";
+import {toast} from "react-hot-toast";
+import {FormRow} from "../../components";
+import {updateUserNameData} from "../../utils/axios";
+import {signOut} from "next-auth/react";
 
 const name = () => {
-  const fetchData = async () => {
-    const {data} = await axios.patch('/api/v1/auth/user/name', {
-      name: 'newCooper',
-    });
-    return data;
+  const [value, setValue] = useState("");
+
+  const onChange = (e) => {
+    setValue(e.target.value);
   };
 
-  const {isInitialLoading, isError, data, error, refetch, isFetching} = useQuery({
-    queryKey: ['updateName'],
-    queryFn: fetchData,
-    onError: (error) => {
-      console.log(error);
-    },
+  const onSubmit = (e) => {
+    e.preventDefault();
+    refetch();
+  };
+
+  const {data, refetch} = useQuery({
+    queryKey: ["updateName"],
+    queryFn: () => updateUserNameData(value),
+    onError: (error) => toast.error(error.response.data.msg),
+    onSuccess: () => signOut(),
     refetchOnWindowFocus: false,
     enabled: false,
   });
 
-  if (isInitialLoading) return <Loading />;
-  if (isFetching) return <h2 className="text-white">fetching...</h2>;
-
   return (
-    <div className="grid justify-center">
-      <h2 className="text-center text-white text-4xl mb-10 mt-10">New Name</h2>
-      <FormRow type="login" field="New Name" />
-      {error && <h2 className="text-white">{error.response.data.msg}</h2>}
-      <button
-        type="update name"
-        className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  mt-10 "
-        onClick={() => refetch()}
-      >
-        Update Name
-      </button>
-      {data && <h2 className="text-white">{data.user.name}</h2>}
+    <div className=" bg-gray-900 h-screen pt-10">
+      {/*  title */}
+      <h2 className="text-center text-white text-4xl">update name</h2>
+
+      {/*  form */}
+      <form className="mt-10 grid justify-center" onSubmit={onSubmit}>
+        <FormRow status="updateName" name="name" type="name" value={value} onChange={onChange} />
+
+        {/*  login button */}
+        <button
+          type="submit"
+          className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  mt-5 "
+        >
+          update name
+        </button>
+      </form>
     </div>
   );
 };
