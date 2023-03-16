@@ -15,7 +15,7 @@ const Register = () => {
   });
 
   //  react-query
-  const {isLoading, isError, error, mutate} = useMutation({
+  const {isLoading, mutate} = useMutation({
     mutationFn: (newUser) => registerUserData(newUser),
     mutationKey: ["registerUser"],
     onError: (error) => toast.error(error.response.data.msg),
@@ -34,9 +34,6 @@ const Register = () => {
     mutate(registerNewUser);
   };
 
-  //  loading
-  if (isLoading) return <Loading />;
-
   //  rendering
   return (
     <div className=" bg-gray-900 h-screen pt-10">
@@ -45,13 +42,13 @@ const Register = () => {
 
       {/*  form */}
       <form className="mt-10 grid justify-center" onSubmit={onSubmit}>
-        <FormRow name="email" type="email" field="email" onChange={onChange} />
-        <FormRow name="name" type="name" field="name" onChange={onChange} />
-        <FormRow name="password" type="password" field="password" onChange={onChange} />
+        <FormRow name="email" type="email" value={values.email} onChange={onChange} />
+        <FormRow name="name" type="name" value={values.name} onChange={onChange} />
+        <FormRow name="password" type="password" value={values.password} onChange={onChange} />
 
         {/*  login button */}
         <button
-          type="login"
+          type="submit"
           className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  mt-5 "
         >
           Register
