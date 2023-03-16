@@ -15,7 +15,7 @@ const Register = () => {
   });
 
   //  react-query
-  const {isLoading, mutate} = useMutation({
+  const {mutate} = useMutation({
     mutationFn: (newUser) => registerUserData(newUser),
     mutationKey: ["registerUser"],
     onError: (error) => toast.error(error?.response?.data?.msg),

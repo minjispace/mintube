@@ -1,13 +1,19 @@
 import {useMutation} from "@tanstack/react-query";
-import {signOut} from "next-auth/react";
+import {signOut, useSession} from "next-auth/react";
 import {useRouter} from "next/router";
 import React, {useState} from "react";
 import {toast} from "react-hot-toast";
 import {FormRow} from "../../components";
 import {updatePasswordData} from "../../utils/axios";
+import Login from "../login";
+// ---------------------------------------------
 
 const password = () => {
-  // router
+  //  user가 없을 경우 login 페이지로 돌리기
+  const {data: session} = useSession();
+  if (!session) return <Login />;
+
+  // router로 passwordToken 설정
   const {
     query: {passwordToken},
   } = useRouter();

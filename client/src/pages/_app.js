@@ -29,6 +29,7 @@ function App({Component, pageProps: {session, ...pageProps}}) {
     <SessionProvider session={session}>
       <QueryClientProvider client={queryClient}>
         <Header />
+
         <Component {...pageProps} />
         <Toaster position="top-center" />
       </QueryClientProvider>
