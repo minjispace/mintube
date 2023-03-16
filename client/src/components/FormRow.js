@@ -1,12 +1,11 @@
 import {useSession} from "next-auth/react";
 
 const FormRow = ({status, type, name, value, onChange}) => {
-  console.log({name, value}, "@@");
   const {data: session} = useSession();
   return (
     <>
       <label htmlFor={name} className="mb-2 text-l font-medium text-white ">
-        {name} :
+        {type} :
       </label>
       <input
         type={type}

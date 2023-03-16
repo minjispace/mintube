@@ -29,15 +29,15 @@ const updateUserNameData = async (name) => {
 };
 //  forgot password api
 const forgotPasswordData = async (originalPassword) => {
-  console.log(originalPassword, "axios password");
   return await axiosAPI.post("/auth/forgot/user/password", {
     originalPassword,
   });
 };
 //  forgot password api
-const updatePasswordData = async ({paswordToken, email, newPassword}) => {
-  return await axiosAPI.post("/auth/logout", {
-    paswordToken,
+const updatePasswordData = async ({passwordToken, email, newPassword}) => {
+  console.log({passwordToken, email, newPassword}, "axios info");
+  return await axiosAPI.post("/auth/user/password", {
+    passwordToken,
     email,
     newPassword,
   });
