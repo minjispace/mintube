@@ -1,20 +1,24 @@
 import {useMutation} from "@tanstack/react-query";
-import {useState} from "react";
-import {FormRow} from "../components";
-import {registerUserData} from "../utils/axios";
 import Link from "next/link";
 import {useRouter} from "next/router";
+import {useState} from "react";
 import {toast} from "react-hot-toast";
+import {FormRow} from "../components";
+import {registerUserData} from "../utils/axios";
+// ------------------------------------------------------
 
 const Register = () => {
+  //  router
   const router = useRouter();
+
+  //  state 설정
   const [values, setValues] = useState({
     name: "",
     password: "",
     email: "",
   });
 
-  //  react-query
+  //  react-query register요청
   const {mutate} = useMutation({
     mutationFn: (newUser) => registerUserData(newUser),
     mutationKey: ["registerUser"],
@@ -27,6 +31,7 @@ const Register = () => {
     setValues({...values, [e.target.name]: e.target.value});
   };
 
+  //  onSubmit
   const onSubmit = (e) => {
     e.preventDefault();
     const {name, email, password} = values;
@@ -34,7 +39,7 @@ const Register = () => {
     mutate(registerNewUser);
   };
 
-  //  rendering
+  //  return rendering
   return (
     <div className=" bg-gray-900 h-screen pt-10">
       {/*  title */}
@@ -54,7 +59,7 @@ const Register = () => {
           Register
         </button>
 
-        {/*  link button */}
+        {/*  register 조건 */}
         <div className="my-10">
           <p className="text-white py-3">
             Already have user?

@@ -18,12 +18,14 @@ const Header = () => {
     enabled: false,
   });
 
+  // return rendering
   return (
     <nav className="flex justify-between items-center px-4 py-5 text-gray-300 border  sm:flex sm:px-5  bg-gray-800 border-gray-800" aria-label="Breadcrumb">
       {/*  youtube logo */}
       <div className="flex items-center">
         {/*   logo */}
         <img src="images/youtube.svg" />
+
         {/*  title */}
         <a href="/" className="ml-1 text-xl font-medium tracking-widest  hover:text-blue-600 md:ml-2 dark:hover:text-white">
           Minjitube
@@ -32,6 +34,7 @@ const Header = () => {
 
       {/*  button */}
       {session?.user ? (
+        //  유저가 있을경우 버튼
         <div className="flex items-center">
           <h5 className="mx-3">{session.user.name}님</h5>
           <button
@@ -53,6 +56,7 @@ const Header = () => {
           </Link>
         </div>
       ) : (
+        //  user가 없을 경우 버튼
         <div className="flex items-center">
           <button
             type="button"

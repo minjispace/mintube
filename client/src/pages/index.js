@@ -1,7 +1,4 @@
-import {useSession} from "next-auth/react";
-import {useRouter} from "next/router";
 import {ListProduct, SearchForm} from "../components";
-import Login from "./login";
 
 export default function Home() {
   return (
