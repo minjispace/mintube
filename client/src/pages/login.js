@@ -46,9 +46,6 @@ const login = () => {
       {/*  title */}
       <h2 className="text-center text-white text-4xl">Login</h2>
 
-      {/*  error */}
-      {/* {isError && <h2 className="text-rose-600 my-3">{error?.response?.data?.msg}</h2>} */}
-
       {/*  form */}
       <form className="mt-10 grid justify-center" onSubmit={onSubmit}>
         <FormRow name="email" type="email" value={values.email} onChange={onChange} />

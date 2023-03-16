@@ -1,6 +1,6 @@
 import {useMutation} from "@tanstack/react-query";
 import {useState} from "react";
-import {FormRow, Loading} from "../components";
+import {FormRow} from "../components";
 import {registerUserData} from "../utils/axios";
 import Link from "next/link";
 import {useRouter} from "next/router";
