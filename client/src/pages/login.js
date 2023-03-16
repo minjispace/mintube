@@ -51,8 +51,8 @@ const login = () => {
 
       {/*  form */}
       <form className="mt-10 grid justify-center" onSubmit={onSubmit}>
-        <FormRow name="email" type="email" field="email" onChange={onChange} />
-        <FormRow name="password" type="password" field="password" onChange={onChange} />
+        <FormRow name="email" type="email" value={values.email} onChange={onChange} />
+        <FormRow name="password" type="password" value={values.password} onChange={onChange} />
 
         {/*  login button */}
         <button
