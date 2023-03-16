@@ -18,7 +18,7 @@ const Register = () => {
   const {isLoading, mutate} = useMutation({
     mutationFn: (newUser) => registerUserData(newUser),
     mutationKey: ["registerUser"],
-    onError: (error) => toast.error(error.response.data.msg),
+    onError: (error) => toast.error(error?.response?.data?.msg),
     onSuccess: () => router.push("/login"),
   });
 
