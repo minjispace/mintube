@@ -38,7 +38,7 @@ const Header = () => {
         <div className="flex items-center">
           <h5 className="mx-3">{session.user.name}님</h5>
           <button
-            type="button"
+            type={"button"}
             className="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700"
             onClick={() => {
               refetch();
