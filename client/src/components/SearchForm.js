@@ -1,6 +1,6 @@
 const SearchForm = () => {
   return (
-    <form className="m-auto w-2/5">
+    <form className="m-auto w-2/5 pt-10">
       <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">
         Search
       </label>
