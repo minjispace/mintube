@@ -37,6 +37,7 @@ const Header = () => {
         //  유저가 있을경우 버튼
         <div className="flex items-center">
           <h5 className="mx-3">{session.user.name}님</h5>
+          {/*  logout button */}
           <button
             type={"button"}
             className="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700"
@@ -48,11 +49,20 @@ const Header = () => {
             Logout
           </button>
 
+          {/*  setting button */}
           <Link
             className="py-2.5 px-5 mx-3  mr-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
             href="/setting"
           >
             Setting
+          </Link>
+
+          {/*  upload your video */}
+          <Link
+            className="py-2.5 px-5 mx-3  mr-2  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
+            href="/video"
+          >
+            📹 + video
           </Link>
         </div>
       ) : (
