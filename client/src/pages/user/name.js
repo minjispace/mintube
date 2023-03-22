@@ -11,7 +11,7 @@ import Login from "../login";
 const name = () => {
   //  유저가 없을 경우 login page로 redirect
   const {data: session} = useSession();
-  console.log(session, "session");
+
   if (!session) return <Login />;
 
   // state
