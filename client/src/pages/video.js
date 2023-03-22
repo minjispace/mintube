@@ -1,21 +1,54 @@
+import {useMutation} from "@tanstack/react-query";
+import {useRouter} from "next/router";
 import React, {useState} from "react";
 import {FormRow} from "../components";
+import {uploadVideoData} from "../utils/axios/videoAxios";
 
 const video = () => {
+  //  router 설정
+  const router = useRouter();
+
+  // state 설정
+  const [video, setVideo] = useState(null);
   const [values, setValues] = useState({
-    video: "",
     title: "",
     description: "",
   });
 
+  //  react-query register 요청
+  const {mutate} = useMutation({
+    mutationFn: (formData) => uploadVideoData(formData),
+    mutationKey: ["uploadVideo"],
+    onSuccess: () => router.push("/"),
+    onError: (error) => toast.error(error?.response?.data?.msg),
+  });
+
+  //  onChange
   const onChange = (e) => {
     setValues({...values, [e.target.name]: e.target.value});
   };
 
+  //  handleFileChange
+  const handleFileChange = (e) => {
+    setVideo(e.target.files[0]);
+  };
+
+  // onSubmit
   const onSubmit = (e) => {
     e.preventDefault();
-    console.log();
+    const {title, description} = values;
+
+    //  mutate
+    if (video && title && description) {
+      const formData = new FormData();
+      formData.append("video", video);
+      formData.append("title", title);
+      formData.append("description", description);
+      mutate(formData);
+    }
   };
+
+  //  return rendering
   return (
     <div className=" bg-gray-900 h-screen pt-10">
       {/*  form */}
@@ -28,14 +61,16 @@ const video = () => {
           aria-describedby="file_input_help"
           id="file_input"
           type="file"
+          accept="video/*"
+          onChange={handleFileChange}
         />
 
-        <FormRow name="Title" type="title" value={values.title} onChange={onChange} />
-        <FormRow name="Description" type="description" value={values.description} onChange={onChange} />
+        <FormRow name="title" type="title" value={values.title} onChange={onChange} />
+        <FormRow name="description" type="description" value={values.description} onChange={onChange} />
 
         {/*  upload button */}
         <button
-          type="button"
+          type="submit"
           className=" text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm  sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800  mt-5 "
         >
           upload video
