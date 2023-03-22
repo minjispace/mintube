@@ -9,4 +9,8 @@ const uploadVideoData = async (formData) => {
   return await axiosAPI.post("/video", formData, config);
 };
 
-export {uploadVideoData};
+const getAllVideosData = async () => {
+  return await axiosAPI.get("/video");
+};
+
+export {uploadVideoData, getAllVideosData};
