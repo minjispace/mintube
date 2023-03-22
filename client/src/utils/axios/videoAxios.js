@@ -29,4 +29,10 @@ const updateVideoData = async ({title, description, id}) => {
   });
 };
 
-export {uploadVideoData, getAllVideosData, deleteVideoData, updateVideoData};
+//  single video
+const getSingleVideosData = async (id) => {
+  console.log(id, "axios id");
+  return await axiosAPI.get(`/video/${id}`);
+};
+
+export {uploadVideoData, getAllVideosData, deleteVideoData, updateVideoData, getSingleVideosData};

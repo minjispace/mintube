@@ -27,7 +27,7 @@ export default function editVideo() {
   };
 
   //  react-query updatePassword
-  const {mutate, data} = useMutation({
+  const {mutate} = useMutation({
     mutationFn: ({title, description, id}) => updateVideoData({title, description, id}),
     mutationKey: ["updateVideo"],
     onError: (error) => toast.error(error?.response?.data?.msg),
