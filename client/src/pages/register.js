@@ -4,7 +4,8 @@ import {useRouter} from "next/router";
 import {useState} from "react";
 import {toast} from "react-hot-toast";
 import {FormRow} from "../components";
-import {registerUserData} from "../utils/axios";
+import {registerUserData} from "../utils/axios/authAxios";
+
 // ------------------------------------------------------
 
 const Register = () => {

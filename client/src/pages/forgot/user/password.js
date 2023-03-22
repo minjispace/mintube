@@ -4,7 +4,8 @@ import {useRouter} from "next/router";
 import {useState} from "react";
 import {toast} from "react-hot-toast";
 import {FormRow} from "../../../components";
-import {forgotPasswordData} from "../../../utils/axios";
+import {forgotPasswordData} from "../../../utils/axios/authAxios";
+
 import Login from "../../login";
 // ---------------------------------------------------------
 

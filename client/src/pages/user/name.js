@@ -3,7 +3,8 @@ import {signOut, useSession} from "next-auth/react";
 import React, {useState} from "react";
 import {toast} from "react-hot-toast";
 import {FormRow} from "../../components";
-import {updateUserNameData} from "../../utils/axios";
+import {updateUserNameData} from "../../utils/axios/authAxios";
+
 import Login from "../login";
 // ---------------------------------------------------------
 

@@ -4,7 +4,8 @@ import {useRouter} from "next/router";
 import React, {useState} from "react";
 import {toast} from "react-hot-toast";
 import {FormRow} from "../../components";
-import {updatePasswordData} from "../../utils/axios";
+import {updatePasswordData} from "../../utils/axios/authAxios";
+
 import Login from "../login";
 // ---------------------------------------------
 
