@@ -1,4 +1,3 @@
-import {useQuery} from "@tanstack/react-query";
 import {useRouter} from "next/router";
 import {CreateComment} from "../../components";
 import {getSingleVideosData} from "../../utils/axios/videoAxios";
@@ -30,7 +29,7 @@ export default function detailVideo(props) {
 
   return (
     //  single video info
-    <div className="bg-gray-900 w-full h-screen text-white  pt-20 px-20">
+    <div className="bg-gray-900 w-full min-h-screen text-white  pt-20 px-20">
       <ul className="pt-10">
         <li>
           <div className="text-xl my-3">Title : {title}</div>
@@ -57,7 +56,7 @@ export default function detailVideo(props) {
           create comment
         </button>
         {videoData?.comment?.map((item) => (
-          <CreateComment key={item.id} commentData={item} />
+          <CreateComment key={item.id} commentData={item} videoId={id} />
         ))}
       </div>
     </div>

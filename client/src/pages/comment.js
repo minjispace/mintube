@@ -41,9 +41,6 @@ export default function comment() {
     <div className=" bg-gray-900 h-screen pt-20">
       {/*  form */}
       <form className="mt-10 mb-10 w-4/5 m-auto " onSubmit={onSubmit}>
-        <label className="mb-2 text-l font-medium text-white " htmlFor="upload_comment">
-          Upload comment
-        </label>
         <FormRow name="message" type="message" value={message} onChange={onChange} />
 
         {/*  upload button */}

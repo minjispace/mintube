@@ -14,9 +14,9 @@ const getAllCommentsData = async () => {
 };
 
 //  edit comment
-const editCommentData = async ({message, videoId}) => {
-  return await axiosAPI.patch(`/comment/${videoId}`, {
-    message,
+const editCommentData = async ({id, editMessage}) => {
+  return await axiosAPI.patch(`/comment/${id}`, {
+    message: editMessage,
   });
 };
 

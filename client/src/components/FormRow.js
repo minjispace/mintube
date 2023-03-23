@@ -1,6 +1,6 @@
 import {useSession} from "next-auth/react";
 
-const FormRow = ({content, type, name, value, onChange}) => {
+const FormRow = ({content, type, name, value, onChange, mode}) => {
   const {data: session} = useSession();
 
   const handlePlaceholder = () => {
@@ -14,13 +14,16 @@ const FormRow = ({content, type, name, value, onChange}) => {
     if (name === "description") {
       result = content;
     }
+    if (mode === "edit") {
+      result = content;
+    }
     return result;
   };
 
   return (
     <>
       <label htmlFor={name} className="mb-2 text-l font-medium text-white ">
-        {name} :
+        {type} :
       </label>
       <input
         type={type}
