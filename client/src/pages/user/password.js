@@ -38,7 +38,7 @@ const password = () => {
   };
 
   //  react-query updatePassword
-  const {mutate, data} = useMutation({
+  const {mutate} = useMutation({
     mutationFn: ({passwordToken, email, newPassword}) => updatePasswordData({passwordToken, email, newPassword}),
     mutationKey: ["updatePassword"],
     onError: (error) => toast.error(error?.response?.data?.msg),

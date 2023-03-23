@@ -1,6 +1,6 @@
-import {useQuery} from "@tanstack/react-query";
+import {useMutation, useQuery} from "@tanstack/react-query";
 import {useRouter} from "next/router";
-import {useState} from "react";
+import React, {useState} from "react";
 import {toast} from "react-hot-toast";
 import {deleteVideoData, getAllVideosData} from "../utils/axios/videoAxios";
 
@@ -17,20 +17,27 @@ const ListProduct = ({realUser}) => {
   };
 
   //  react-query forgotPassword 요청
-  const {} = useQuery({
+  const {refetch} = useQuery({
     queryKey: ["getAllVideos"],
     queryFn: getAllVideosData,
     onError: (error) => toast.error(error?.response?.data?.msg),
     onSuccess: (data) => setVideos(data),
   });
 
+  //  react-query deleteVideo 요청
+  const {mutate, isLoading} = useMutation({
+    mutationFn: (id) => deleteVideoData(id),
+    onError: (error) => toast.error(error?.response?.data?.msg),
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
   //  delete video
   const deleteVideo = async ({name, email, id}) => {
     if (!videos) return;
     if (isUser(name, email)) {
-      await deleteVideoData(id);
-      const tempVideo = videos?.data?.videos?.filter((item) => item.id !== id);
-      setVideos(tempVideo);
+      mutate(id);
       return;
     }
     return router.push("/login");
@@ -95,7 +102,7 @@ const ListProduct = ({realUser}) => {
                     className="inline-flex items-center px-3 py-2 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700"
                     onClick={() => deleteVideo({name, email, id})}
                   >
-                    delete video
+                    {isLoading ? "💡" : " delete video"}
                   </button>
 
                   {/*  edit video button */}
