@@ -6,7 +6,7 @@ import {updateVideoData} from "../../../utils/axios/videoAxios";
 
 export default function editVideo() {
   const router = useRouter();
-  const id = router.query.editVideo;
+  const {id, title, description} = router.query;
 
   // state
   const [values, setValues] = useState({
@@ -41,9 +41,9 @@ export default function editVideo() {
 
       {/*  form */}
       <form className="mt-10 w-4/5 m-auto" onSubmit={onSubmit}>
-        <FormRow status="updateContent" name="title" type="title" value={values.title} onChange={onChange} />
+        <FormRow content={title} name="title" type="title" value={values.title} onChange={onChange} />
 
-        <FormRow status="updateContent" name="description" type="description" value={values.description} onChange={onChange} />
+        <FormRow content={description} name="description" type="description" value={values.description} onChange={onChange} />
 
         {/*   button */}
         <button

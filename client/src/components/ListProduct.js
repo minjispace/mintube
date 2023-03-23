@@ -44,11 +44,11 @@ const ListProduct = ({realUser}) => {
   };
 
   //  edit video
-  const editVideo = ({name, email, id}) => {
+  const editVideo = ({name, email, id, title, description}) => {
     if (isUser(name, email)) {
       router.push({
         pathname: `/video/edit/${id}`,
-        query: {id},
+        query: {id, title, description},
       });
     }
     return router.push("/");
@@ -108,7 +108,7 @@ const ListProduct = ({realUser}) => {
                   {/*  edit video button */}
                   <button
                     className="inline-flex items-center px-3 py-2 mx-3 text-sm font-normal text-center text-gray-600 bg-gray-200 rounded-lg hover:bg-gray-300 focus:ring-4 focus:outline-none focus:ring-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-gray-300 dark:focus:ring-gray-700"
-                    onClick={() => editVideo({name, email, id})}
+                    onClick={() => editVideo({name, email, id, title, description})}
                   >
                     edit video
                   </button>

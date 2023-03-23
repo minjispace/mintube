@@ -46,7 +46,7 @@ const name = () => {
 
       {/*  form */}
       <form className="mt-10 grid justify-center" onSubmit={onSubmit}>
-        <FormRow status="updateName" name="name" type="name" value={value} onChange={onChange} />
+        <FormRow name="name" type="name" value={value} onChange={onChange} />
 
         {/*  update button */}
         <button

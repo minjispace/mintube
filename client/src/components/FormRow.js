@@ -1,12 +1,18 @@
 import {useSession} from "next-auth/react";
 
-const FormRow = ({status, type, name, value, onChange}) => {
+const FormRow = ({content, type, name, value, onChange}) => {
   const {data: session} = useSession();
 
   const handlePlaceholder = () => {
     let result;
-    if (status === "updateName") {
+    if (name === "name") {
       result = session?.user?.name;
+    }
+    if (name === "title") {
+      result = content;
+    }
+    if (name === "description") {
+      result = content;
     }
     return result;
   };
