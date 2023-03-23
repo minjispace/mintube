@@ -50,7 +50,7 @@ const video = () => {
 
   //  return rendering
   return (
-    <div className=" bg-gray-900 h-screen pt-10">
+    <div className=" bg-gray-900 h-screen pt-20">
       {/*  form */}
       <form className="mt-10 mb-10 w-4/5 m-auto " onSubmit={onSubmit}>
         <label className="mb-2 text-l font-medium text-white " htmlFor="file_input">

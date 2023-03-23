@@ -59,8 +59,8 @@ const ListProduct = ({realUser}) => {
 
   //  return rendering
   return (
-    <div className="text-white p-5">
-      {videos?.data && <p>{videos?.data?.videoCount}개의 동영상</p>}
+    <div className="text-white pt-20 ">
+      {videos?.data && <p className="pt-10">{videos?.data?.videoCount}개의 동영상</p>}
       <ul className="bg-gray-900 ">
         {videos?.data?.videos?.map((item) => {
           const {

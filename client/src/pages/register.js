@@ -42,7 +42,7 @@ const Register = () => {
 
   //  return rendering
   return (
-    <div className=" bg-gray-900 h-screen pt-10">
+    <div className=" bg-gray-900 h-screen pt-10 mt-20">
       {/*  title */}
       <h2 className="text-center text-white text-4xl">Register</h2>
 

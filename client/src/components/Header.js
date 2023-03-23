@@ -20,7 +20,7 @@ const Header = () => {
 
   // return rendering
   return (
-    <nav className="flex justify-between items-center px-4 py-5 text-gray-300 border  sm:flex sm:px-5  bg-gray-800 border-gray-800" aria-label="Breadcrumb">
+    <nav className="flex justify-between items-center px-4 py-5 text-gray-300 border  sm:flex sm:px-5  bg-gray-800 border-gray-800 fixed top-0 left-0 right-0" aria-label="Breadcrumb">
       {/*  youtube logo */}
       <div className="flex items-center">
         {/*   logo */}

@@ -26,8 +26,8 @@ export default function detailVideo(props) {
   if (typeof videoData === String) return toast.error(videoData);
 
   return (
-    <div className="bg-gray-900 w-full h-screen text-white grid justify-center pt-10">
-      <ul>
+    <div className="bg-gray-900 w-full h-screen text-white grid justify-center pt-20">
+      <ul className="pt-10">
         <li className=" p-5  border-2 rounded-2xl">
           <div className="text-xl my-3">Title : {videoData?.title}</div>
           <p className="mb-5">Description : {videoData?.description}</p>

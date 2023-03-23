@@ -22,7 +22,6 @@ const deleteVideoData = async (id) => {
 
 //  edit video
 const updateVideoData = async ({title, description, id}) => {
-  console.log({title, description, id}, "@@axios");
   return await axiosAPI.patch(`/video/${id}`, {
     title,
     description,
@@ -31,7 +30,6 @@ const updateVideoData = async ({title, description, id}) => {
 
 //  single video
 const getSingleVideosData = async (id) => {
-  console.log(id, "axios id");
   return await axiosAPI.get(`/video/${id}`);
 };
 
