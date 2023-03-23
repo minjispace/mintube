@@ -1,5 +1,4 @@
 import {useQuery} from "@tanstack/react-query";
-import Link from "next/link";
 import {useRouter} from "next/router";
 import {useState} from "react";
 import {toast} from "react-hot-toast";
@@ -53,9 +52,9 @@ const ListProduct = ({realUser}) => {
 
   //  return rendering
   return (
-    <div className="text-white p-5 ">
+    <div className="text-white p-5 h-screen ">
       {videos?.data && <p>{videos?.data?.videoCount}개의 동영상</p>}
-      <ul>
+      <ul className="bg-gray-900 ">
         {videos?.data?.videos?.map((item) => {
           const {
             id,
@@ -66,24 +65,22 @@ const ListProduct = ({realUser}) => {
             user: {email, name},
           } = item;
           return (
-            <li className=" p-5 my-5 border-2 rounded-2xl" key={id}>
+            <li className="bg-gray-900 my-5 p-5 border-2 rounded-2xl " key={id}>
               <div className="text-xl my-3">Title : {title}</div>
               <p className="mb-5">Description : {description}</p>
               <p className="text-gray-500 py-3">created at .{createdAt.substring(0, 16)}</p>
               {/* see video button */}
-              <Link
-                className="py-2.5 px-5   text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                href={fileUrl}
-              >
-                see video
-              </Link>
+
+              <video controls width="400">
+                <source src={fileUrl} type="video/webm"></source>
+              </video>
 
               {/*  see detail button */}
               <button
                 className="py-2.5 px-5 mx-3  text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                 onClick={() => {
                   router.push({
-                    pathname: `/video/${id}`,
+                    pathname: `/video/detail`,
                     query: {id},
                   });
                 }}
