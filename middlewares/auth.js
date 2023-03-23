@@ -1,8 +1,8 @@
-import {NotFoundError, UnauthenticatedError, UnauthorizedError} from '../errors/index.js';
-import {findCommentById} from '../services/comment.services.js';
-import {findTokenByIdFromDatabase} from '../services/token.services.js';
-import {findSingleVideoById} from '../services/video.services.js';
-import {attachCookiesToResponse, isTokenValid} from '../utils/index.js';
+import {NotFoundError, UnauthenticatedError, UnauthorizedError} from "../errors/index.js";
+import {findCommentById} from "../services/comment.services.js";
+import {findTokenByIdFromDatabase} from "../services/token.services.js";
+import {findSingleVideoById} from "../services/video.services.js";
+import {attachCookiesToResponse, isTokenValid} from "../utils/index.js";
 
 // authenticateUser middleware
 const authenticateUser = async (req, res, next) => {
@@ -19,7 +19,7 @@ const authenticateUser = async (req, res, next) => {
 
       //  refresh token이 존재하지않거나 isValid가 false인 경우
       if (!existingRefreshToken || !existingRefreshToken?.isValid) {
-        throw new UnauthenticatedError('Authentication Invalid');
+        throw new UnauthenticatedError("Authentication Invalid");
       }
 
       //  cookie에 확인한 우리의 existing token과 user 다시 붙여주기
@@ -36,7 +36,7 @@ const authenticateUser = async (req, res, next) => {
     req.user = payload.user;
     next();
   } catch (error) {
-    throw new UnauthenticatedError('Authentication Invalid. please login again');
+    throw new UnauthenticatedError("Authentication Invalid. please login again");
   }
 };
 
@@ -45,7 +45,7 @@ const authorizePermissionsForOnlyAdmin = (role) => {
   return (req, res, next) => {
     //  만약 Role이 ADMIN계정이 아니라면 빠꾸
     if (!role.match(req.user.role)) {
-      throw new UnauthorizedError('Unauthorized to access this user. please login admin user');
+      throw new UnauthorizedError("Unauthorized to access this user. please login admin user");
     }
     next();
   };
@@ -59,12 +59,12 @@ const authorizePermissionOwner = (type) => {
     let {id: userId} = req.user;
 
     //  video일 경우
-    if (type === 'video') {
+    if (type === "video") {
       result = await findSingleVideoById(providedId);
     }
 
     //  comment일 경우
-    if (type === 'comment') {
+    if (type === "comment") {
       result = await findCommentById(providedId);
     }
 
@@ -74,8 +74,9 @@ const authorizePermissionOwner = (type) => {
     }
 
     //  owner check
-    if (userId !== result.userId) {
-      throw new UnauthorizedError('Unauthorized to access this user.');
+    if (userId !== result.user.id) {
+      console.log({userId, result}, "22이건뭐");
+      throw new UnauthorizedError("Unauthorized to access this user.");
     }
     next();
   };

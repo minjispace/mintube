@@ -8,4 +8,21 @@ const uploadCommentData = async ({message, videoId}) => {
   });
 };
 
-export {uploadCommentData};
+//  getAll Comments
+const getAllCommentsData = async () => {
+  return await axiosAPI.get("/comment");
+};
+
+//  edit comment
+const editCommentData = async ({message, videoId}) => {
+  return await axiosAPI.patch(`/comment/${videoId}`, {
+    message,
+  });
+};
+
+//  delete comment
+const deleteCommentData = async (videoId) => {
+  return await axiosAPI.delete(`/comment/${videoId}`);
+};
+
+export {uploadCommentData, editCommentData, deleteCommentData, getAllCommentsData};

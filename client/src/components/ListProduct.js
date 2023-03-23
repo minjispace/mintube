@@ -16,7 +16,7 @@ const ListProduct = ({realUser}) => {
     return name === realUser?.name && email === realUser?.email;
   };
 
-  //  react-query forgotPassword 요청
+  //  react-query getAllVideos 요청
   const {refetch} = useQuery({
     queryKey: ["getAllVideos"],
     queryFn: getAllVideosData,

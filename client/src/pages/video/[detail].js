@@ -1,9 +1,10 @@
+import {useQuery} from "@tanstack/react-query";
 import {useRouter} from "next/router";
 import {CreateComment} from "../../components";
 import {getSingleVideosData} from "../../utils/axios/videoAxios";
 
 export const getServerSideProps = async (context) => {
-  const id = context?.query?.id;
+  const videoId = context?.query?.id;
 
   let videoData;
 
@@ -11,7 +12,7 @@ export const getServerSideProps = async (context) => {
     //  react-query forgotPassword 요청
     const {
       data: {video},
-    } = await getSingleVideosData(id);
+    } = await getSingleVideosData(videoId);
     videoData = video;
   } catch (error) {
     return {
@@ -26,6 +27,7 @@ export default function detailVideo(props) {
   const router = useRouter();
 
   const {title, description, fileUrl, createdAt, id} = videoData;
+
   return (
     //  single video info
     <div className="bg-gray-900 w-full h-screen text-white  pt-20 px-20">
@@ -55,7 +57,7 @@ export default function detailVideo(props) {
           create comment
         </button>
         {videoData?.comment?.map((item) => (
-          <CreateComment key={item.id} videoData={item} />
+          <CreateComment key={item.id} commentData={item} />
         ))}
       </div>
     </div>

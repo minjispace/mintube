@@ -29,7 +29,8 @@ const updateVideoData = async ({title, description, id}) => {
 };
 
 //  single video
-const getSingleVideosData = async (id) => {
+const getSingleVideosData = async (videoId) => {
+  const id = videoId;
   return await axiosAPI.get(`/video/${id}`);
 };
 

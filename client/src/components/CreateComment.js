@@ -1,21 +1,26 @@
+import {useMutation} from "@tanstack/react-query";
 import {useSession} from "next-auth/react";
 import React from "react";
+import {toast} from "react-hot-toast";
+import {deleteCommentData} from "../utils/axios/commentAxios";
 
-export default function CreateComment({videoData}) {
+export default function CreateComment({commentData}) {
   const {data: session} = useSession();
+
   const {
-    id: videoId,
+    id,
     message,
     createdAt,
     user: {name: userName, email: userEmail},
-  } = videoData;
+  } = commentData;
 
   //  user확인
   const isUser = userName === session?.user?.name && userEmail === session?.user?.email;
 
   //  handleDelete
   const handleDelete = () => {
-    console.log("delete");
+    if (!isUser) return;
+    mutate(id);
   };
 
   //  handleEdit
@@ -23,8 +28,14 @@ export default function CreateComment({videoData}) {
     console.log("edit");
   };
 
+  //  react-query deleteComment 요청
+  const {mutate} = useMutation({
+    mutationFn: () => deleteCommentData(id),
+    onError: (error) => toast.error(error?.response?.data?.msg),
+  });
+
   return (
-    <ul className=" border-2 rounded-2xl background-blue-400 p-5 w-2/6 my-3" key={videoId}>
+    <ul className=" border-2 rounded-2xl background-blue-400 p-5 w-2/6 my-3" key={id}>
       <div className="text-2xl">{userName}</div>
       <li>message : {message}</li>
       <p>createdAt.{createdAt}</p>
